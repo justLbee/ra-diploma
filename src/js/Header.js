@@ -14,40 +14,40 @@ export default class Header extends React.Component {
   }
 
   mainMenuClicked(event) {
-    console.log(event.target.parentNode);
-
     if(event.target.parentNode.classList.contains('wrapper') || event.target.parentNode.classList.contains('main-menu__items')){
       return;
     }
 
     if(!this.category) {
-      this.showDropMenu(true);
+      this.showDropMenu(true, event.target.parentNode);
     }
     else if(this.category !== event.target.parentNode) {
-      this.category.classList.remove('main-menu__item_active');
-      this.category = event.target.parentNode;
-
-      this.showDropMenu(true);
+      this.showDropMenu(true, event.target.parentNode);
     }
     else if(this.category === event.target.parentNode && !this.state.droppedMenu){
-      this.showDropMenu(true);
-    } else {
-      this.showDropMenu(false);
+      this.showDropMenu(true, event.target.parentNode);
+    }
+    else {
+      this.showDropMenu(false, event.target.parentNode);
     }
 
     this.category = event.target.parentNode;
-    this.category.classList.add('main-menu__item_active');
   }
 
-  showDropMenu(isOpen) {
+  showDropMenu(isOpen, element) {
+    if(this.category) {
+      this.category.classList.remove('main-menu__item_active');
+    }
+
     this.setState({
       droppedMenu: isOpen
     });
 
-    // document.querySelector('.dropped-menu').classList.add('dropped-menu_visible');
     if(isOpen) {
+      element.classList.add('main-menu__item_active');
       document.querySelector('.dropped-menu').classList.add('dropped-menu_visible');
     } else {
+      element.classList.remove('main-menu__item_active');
       document.querySelector('.dropped-menu').classList.remove('dropped-menu_visible');
     }
   }
