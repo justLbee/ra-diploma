@@ -11,6 +11,11 @@ import {Contacts} from "./Contacts";
 import {News} from "./News";
 
 export default class Main extends React.Component {
+  constructor(props) {
+    super(props);
+
+  }
+
   render() {
     return(
       <main>

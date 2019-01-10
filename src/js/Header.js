@@ -3,6 +3,55 @@ import React from 'react';
 import {Link} from "react-router-dom";
 
 export default class Header extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      droppedMenu: false,
+    };
+
+    this.category = '';
+  }
+
+  mainMenuClicked(event) {
+    console.log(event.target.parentNode);
+
+    if(event.target.parentNode.classList.contains('wrapper') || event.target.parentNode.classList.contains('main-menu__items')){
+      return;
+    }
+
+    if(!this.category) {
+      this.showDropMenu(true);
+    }
+    else if(this.category !== event.target.parentNode) {
+      this.category.classList.remove('main-menu__item_active');
+      this.category = event.target.parentNode;
+
+      this.showDropMenu(true);
+    }
+    else if(this.category === event.target.parentNode && !this.state.droppedMenu){
+      this.showDropMenu(true);
+    } else {
+      this.showDropMenu(false);
+    }
+
+    this.category = event.target.parentNode;
+    this.category.classList.add('main-menu__item_active');
+  }
+
+  showDropMenu(isOpen) {
+    this.setState({
+      droppedMenu: isOpen
+    });
+
+    // document.querySelector('.dropped-menu').classList.add('dropped-menu_visible');
+    if(isOpen) {
+      document.querySelector('.dropped-menu').classList.add('dropped-menu_visible');
+    } else {
+      document.querySelector('.dropped-menu').classList.remove('dropped-menu_visible');
+    }
+  }
+
   render() {
     return (
       <div>
@@ -61,7 +110,7 @@ export default class Header extends React.Component {
                   </div>
                   <form className="header-main__search" action="#">
                     <input placeholder="Поиск"/>
-                    <i className="fa fa-search" aria-hidden="true"></i>
+                    <i className="fa fa-search" aria-hidden="true" />
                   </form>
                 </div>
 
@@ -118,12 +167,12 @@ export default class Header extends React.Component {
                         <a className="product-list__pic">
                           <img src="img/product-list__pic_1.jpg" alt="product"/> </a>
                         <a href="#" className="product-list__product">Ботинки женские, Baldinini</a>
-                        <div className="product-list__fill"></div>
+                        <div className="product-list__fill" />
                         <div className="product-list__price">12 360
-                          <i className="fa fa-rub" aria-hidden="true"></i>
+                          <i className="fa fa-rub" aria-hidden="true" />
                         </div>
                         <div className="product-list__delete">
-                          <i className="fa fa-times" aria-hidden="true"></i>
+                          <i className="fa fa-times" aria-hidden="true" />
                         </div>
                       </div>
 
@@ -133,7 +182,7 @@ export default class Header extends React.Component {
                 </div>
               </div>
             </div>
-            <nav className="main-menu">
+            <nav className="main-menu" onClick={(e) => this.mainMenuClicked(e)}>
               <div className="wrapper">
                 <ul className="main-menu__items">
                   <li className="main-menu__item main-menu__item_sales">
