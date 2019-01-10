@@ -16,10 +16,10 @@ export class Catalogue extends React.Component {
       method: 'GET',
       headers: new Headers({
         'Content-Type': 'application/json'
-      })
+      }),
     };
 
-    fetch('https://neto-api.herokuapp.com/bosa-noga/products', params)
+    fetch(`https://neto-api.herokuapp.com/bosa-noga/products?season=${'Осень'}&page=1`, params)
       .then(response => response.json())
       .then(products => {
         this.products = products;

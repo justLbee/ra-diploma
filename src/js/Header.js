@@ -11,6 +11,8 @@ export default class Header extends React.Component {
     };
 
     this.category = '';
+    this.categoryId = 0;
+    this.pathName = '';
   }
 
   mainMenuClicked(event) {
@@ -50,6 +52,29 @@ export default class Header extends React.Component {
       element.classList.remove('main-menu__item_active');
       document.querySelector('.dropped-menu').classList.remove('dropped-menu_visible');
     }
+  }
+
+  changeLink(event) {
+    switch(event.target.textContent) {
+      case 'Мужская обувь':
+        this.categoryId = 12;
+        break;
+      case 'Женская обувь':
+        this.categoryId = 13;
+        break;
+      case 'Детская обувь':
+        this.categoryId = 15;
+        break;
+      default:
+        this.categoryId = 14;
+        break;
+    }
+
+    this.pathName = `?categoryId=${this.categoryId}`;
+  }
+
+  linkClick() {
+    this.showDropMenu(false, this.category);
   }
 
   render() {
@@ -185,29 +210,30 @@ export default class Header extends React.Component {
             <nav className="main-menu" onClick={(e) => this.mainMenuClicked(e)}>
               <div className="wrapper">
                 <ul className="main-menu__items">
+                  {/*toDo разобраться с ссылками*/}
                   <li className="main-menu__item main-menu__item_sales">
-                    <a href="#">Акции</a>
+                    <Link to={{state: { fromDashboard: true }}} onClick={(e) => this.changeLink(e)}>Акции</Link>
                   </li>
                   <li className="main-menu__item main-menu__item_women">
-                    <a href="#">Женская обувь</a>
+                    <Link to='#' onClick={(e) => this.changeLink(e)}>Женская обувь</Link>
                   </li>
                   <li className="main-menu__item main-menu__item_men">
-                    <a href="#">Мужская обувь</a>
+                    <Link to='#' onClick={(e) => this.changeLink(e)}>Мужская обувь</Link>
                   </li>
                   <li className="main-menu__item main-menu__item_kids">
-                    <a href="#">Детская обувь</a>
+                    <Link to='#' onClick={(e) => this.changeLink(e)}>Детская обувь</Link>
                   </li>
                   <li className="main-menu__item main-menu__item_accessories">
-                    <a href="#">Аксессуары</a>
+                    <Link to='#' onClick={(e) => this.changeLink(e)}>Аксессуары</Link>
                   </li>
                   <li className="main-menu__item main-menu__item_home">
-                    <a href="#">Для дома</a>
+                    <Link to='#' onClick={(e) => this.changeLink(e)}>Для дома</Link>
                   </li>
                   <li className="main-menu__item main-menu__item_brands">
-                    <a href="#">Бренды</a>
+                    <Link to='#' onClick={(e) => this.changeLink(e)}>Бренды</Link>
                   </li>
                   <li className="main-menu__item main-menu__item_new">
-                    <a href="#">Новинки</a>
+                    <Link to='#' onClick={(e) => this.changeLink(e)}>Новинки</Link>
                   </li>
                 </ul>
               </div>
@@ -219,25 +245,25 @@ export default class Header extends React.Component {
                   <h3 className="dropped-menu__list-title">Повод:</h3>
                   <ul className="dropped-menu__list">
                     <li className="dropped-menu__item">
-                      <a href="#">Офис</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&reason=Офис`}}>Офис</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Вечеринка</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&reason=Вечеринка`}}>Вечеринка</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Свадьба</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&reason=Свадьба`}}>Свадьба</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Спорт</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&reason=Спорт`}}>Спорт</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Море</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&reason=Море`}}>Море</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Дом</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&reason=Дом`}}>Дом</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Повседневное</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&reason=Повседневное`}}>Повседневное</Link>
                     </li>
                   </ul>
                 </div>
@@ -245,52 +271,52 @@ export default class Header extends React.Component {
                   <h3 className="dropped-menu__list-title">Категории:</h3>
                   <ul className="dropped-menu__list">
                     <li className="dropped-menu__item">
-                      <a href="#">Балетки</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Балетки`}}>Балетки</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Босоножки</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Босоножки`}}>Босоножки</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Ботильоны</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Ботильоны`}}>Ботильоны</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Ботинки</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Ботинки`}}>Ботинки</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Ботфорты</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Ботфорты`}}>Ботфорты</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Галоши</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Галоши`}}>Галоши</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Кеды и кроссовки</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Кеды и кроссовки`}}>Кеды и кроссовки</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Мокасины</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Мокасины`}}>Мокасины</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Полусапоги</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Полусапоги`}}>Полусапоги</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Резиновые сапоги</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Резиновые сапоги`}}>Резиновые сапоги</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Сабо</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Сабо`}}>Сабо</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Сапоги</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Сапоги`}}>Сапоги</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Сникерсы</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Сникерсы`}}>Сникерсы</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Тапочки</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Тапочки`}}>Тапочки</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Туфли</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Туфли`}}>Туфли</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <a href="#">Шлёпанцы и вьетнамки</a>
+                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Шлёпанцы и вьетнамки`}}>Шлёпанцы и вьетнамки</Link>
                     </li>
                   </ul>
                 </div>
