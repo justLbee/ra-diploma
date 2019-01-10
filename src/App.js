@@ -9,7 +9,7 @@ class App extends Component {
     super(props);
 
     this.categories = {};
-    this.products = {};
+    // this.products = {};
   }
 
   componentWillMount() {
@@ -27,12 +27,12 @@ class App extends Component {
         console.log(this.categories);
       });
 
-    fetch('https://neto-api.herokuapp.com/bosa-noga/products', params)
-      .then(response => response.json())
-      .then(products => {
-        this.products = products;
-        console.log(this.products);
-      });
+    // fetch('https://neto-api.herokuapp.com/bosa-noga/products', params)
+    //   .then(response => response.json())
+    //   .then(products => {
+    //     this.products = products;
+    //     console.log(this.products);
+    //   });
   }
 
   render() {

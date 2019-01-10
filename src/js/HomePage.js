@@ -21,7 +21,7 @@ export default class HomePage extends React.Component {
     fetch('https://neto-api.herokuapp.com/bosa-noga/featured ', params)
       .then(response => response.json())
       .then(featured => {
-        console.log(featured.data);
+        // console.log(featured.data);
         this.setState({
           preloader: 'hidden'
         })
