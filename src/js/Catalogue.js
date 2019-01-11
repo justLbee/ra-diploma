@@ -10,15 +10,14 @@ export class Catalogue extends React.Component {
   constructor(props) {
     super(props);
     this.products = {};
+    this.categories = this.props.categories;
+    // this.category = '';
 
     this.state = {
-      preloader: ''
+      preloader: '',
+      category: {}
     };
 
-    this.page = {
-      type: Number,
-      default: 1
-    };
     this.search = {
       type: String,
       default: ''
@@ -26,17 +25,35 @@ export class Catalogue extends React.Component {
 
     this.throttledUpdatePath = null;
   }
+//toDo ПРОСТО ПИЗДА ЕБАНАЯ С ЭТИМИ СТЕЙТАМИ
+  componentWillUpdate(newProps, newState) {
+    console.log(newState);
 
-  componentDidUpdate(newProps) {
+    this.getCategory();
     this.throttledUpdatePath();
   }
 
   shouldComponentUpdate(nextProps, nextState) {
+    console.log(nextState);
+    // this.throttledUpdatePath();
     return this.props !== nextProps;
   }
 
   componentDidMount() {
     this.throttledUpdatePath = throttle(this.updatePath, 2000);
+    this.getServerData(this.props.location.search);
+  }
+
+  getCategory() {
+    const searchCategory = Number(this.props.location.search.substr(12, 2));
+
+    const category = this.categories.find(el => {
+      return el.id === searchCategory ? el.title : '';
+    });
+
+    this.setState({
+      category: category
+    });
   }
 
   updatePath() {
@@ -46,7 +63,6 @@ export class Catalogue extends React.Component {
   }
 
   getServerData(request) {
-    console.log(request);
     const params = {
       method: 'GET',
       headers: new Headers({
@@ -259,7 +275,7 @@ export class Catalogue extends React.Component {
 
             <section className="product-catalogue__head">
               <div className="product-catalogue__section-title">
-                <h2 className="section-name">Женская обувь</h2><span className="amount"> 1 764 товара</span>
+                <h2 className="section-name">{this.state.category.title}</h2><span className="amount"> 1 764 товара</span>
               </div>
               <div className="product-catalogue__sort-by">
                 <p className="sort-by">Сортировать</p>
