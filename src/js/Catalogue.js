@@ -1,6 +1,11 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 
+import throttle from './helpers/throttle.js'
+
+import {createBrowserHistory} from "history";
+const history = createBrowserHistory();
+
 export class Catalogue extends React.Component {
   constructor(props) {
     super(props);
@@ -8,10 +13,40 @@ export class Catalogue extends React.Component {
 
     this.state = {
       preloader: ''
-    }
+    };
+
+    this.page = {
+      type: Number,
+      default: 1
+    };
+    this.search = {
+      type: String,
+      default: ''
+    };
+
+    this.throttledUpdatePath = null;
   }
 
-  componentWillMount() {
+  componentDidUpdate(newProps) {
+    this.throttledUpdatePath();
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return this.props !== nextProps;
+  }
+
+  componentDidMount() {
+    this.throttledUpdatePath = throttle(this.updatePath, 2000);
+  }
+
+  updatePath() {
+    let search = this.props.location.search;
+
+    this.getServerData(search)
+  }
+
+  getServerData(request) {
+    console.log(request);
     const params = {
       method: 'GET',
       headers: new Headers({
@@ -19,7 +54,7 @@ export class Catalogue extends React.Component {
       }),
     };
 
-    fetch(`https://neto-api.herokuapp.com/bosa-noga/products?season=${'Осень'}&page=1`, params)
+    fetch(`https://neto-api.herokuapp.com/bosa-noga/products${request}`, params)
       .then(response => response.json())
       .then(products => {
         this.products = products;
