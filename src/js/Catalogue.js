@@ -10,12 +10,17 @@ export class Catalogue extends React.Component {
   constructor(props) {
     super(props);
     this.products = {};
-    this.categories = this.props.categories;
+    // this.categories = this.props.categories;
     // this.category = '';
 
     this.state = {
       preloader: '',
-      category: {}
+      category: {},
+      goods: 0,
+      items: [],
+      offset: 0,
+      page: 0,
+      pages: 0
     };
 
     this.search = {
@@ -25,18 +30,11 @@ export class Catalogue extends React.Component {
 
     this.throttledUpdatePath = null;
   }
-//toDo ПРОСТО ПИЗДА ЕБАНАЯ С ЭТИМИ СТЕЙТАМИ
-  componentWillUpdate(newProps, newState) {
-    console.log(newState);
 
-    this.getCategory();
-    this.throttledUpdatePath();
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    console.log(nextState);
-    // this.throttledUpdatePath();
-    return this.props !== nextProps;
+  componentDidUpdate(newProps, newState) {
+    if(this.props !== newProps) {
+      this.throttledUpdatePath();
+    }
   }
 
   componentDidMount() {
@@ -47,13 +45,15 @@ export class Catalogue extends React.Component {
   getCategory() {
     const searchCategory = Number(this.props.location.search.substr(12, 2));
 
-    const category = this.categories.find(el => {
-      return el.id === searchCategory ? el.title : '';
-    });
+    if (this.props.categories && this.props.categories.length > 0) {
+      const category = this.props.categories.find(el => {
+        return el.id === searchCategory ? el.title : '';
+      });
 
-    this.setState({
-      category: category
-    });
+      this.setState({
+        category: category
+      });
+    }
   }
 
   updatePath() {
@@ -63,6 +63,8 @@ export class Catalogue extends React.Component {
   }
 
   getServerData(request) {
+    this.hidePreloader(false);
+
     const params = {
       method: 'GET',
       headers: new Headers({
@@ -76,9 +78,31 @@ export class Catalogue extends React.Component {
         this.products = products;
         console.log(this.products);
         this.setState({
-          preloader: 'hidden'
+          goods: this.products.goods,
+          items: this.products.data,
+          page: this.products.page,
+          pages: this.products.pages,
+          offset: this.products.offset
         })
+      })
+      .finally(() => {
+        this.getCategory();
+        this.hidePreloader(true);
+        console.log(this.state);
       });
+  }
+
+  hidePreloader(isHidden = false) {
+    if(isHidden) {
+      this.setState({
+        preloader: 'hidden'
+      });
+    } else {
+      this.setState({
+        preloader: ''
+      });
+    }
+
   }
 
   render() {
@@ -275,7 +299,8 @@ export class Catalogue extends React.Component {
 
             <section className="product-catalogue__head">
               <div className="product-catalogue__section-title">
-                <h2 className="section-name">{this.state.category.title}</h2><span className="amount"> 1 764 товара</span>
+                <h2 className="section-name">{this.state.category.title ? this.state.category.title : ''}</h2>
+                <span className="amount"> {this.products.goods} товаров</span>
               </div>
               <div className="product-catalogue__sort-by">
                 <p className="sort-by">Сортировать</p>
@@ -289,306 +314,29 @@ export class Catalogue extends React.Component {
 
             <section className="product-catalogue__item-list">
 
-              <a className="item-list__item-card item" href="product-card-desktop.html">
-                <div className="item-pic"><img className="item-pic-1"
-                                               src="img/catalogue-pics/product-catalogue__item-1.png"
-                                               alt="Босоножки женские"/>
-                  <div className="product-catalogue__product_favorite">
-                    <p></p>
+              {this.state.items.map(item =>
+                <a key={item.id} className="item-list__item-card item" href="product-card-desktop.html">
+                  <div className="item-pic"><img className="item-pic-1"
+                                                 src={item.images[0]}
+                                                 alt={item.title}
+                  width='80%' />
+                    <div className="product-catalogue__product_favorite">
+                      <p></p>
+                    </div>
+                    <div className="arrow arrow_left"></div>
+                    <div className="arrow arrow_right"></div>
                   </div>
-                  <div className="arrow arrow_left"></div>
-                  <div className="arrow arrow_right"></div>
-                </div>
-                <div className="item-desc">
-                  <h4 className="item-name">Босоножки женские</h4>
-                  <p className="item-producer">Производитель: <span className="producer">Damlax</span></p>
-                  <p className="item-price">18 520</p>
-                  <div className="sizes">
-                    <p className="sizes__title">Размеры в наличии:</p>
-                    <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
+                  <div className="item-desc">
+                    <h4 className="item-name">{item.title}</h4>
+                    <p className="item-producer">Производитель: <span className="producer">{item.brand}</span></p>
+                    <p className="item-price">{item.price}</p>
+                    <div className="sizes">
+                      <p className="sizes__title">Размеры в наличии:</p>
+                      <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
+                    </div>
                   </div>
-                </div>
-              </a>
-              <a className="item-list__item-card item" href="product-card-desktop.html">
-                <div className="item-pic"><img className="item-pic-2"
-                                               src="img/catalogue-pics/product-catalogue__item-2.png"
-                                               alt="Ботинки женские"/>
-                  <div className="product-catalogue__product_favorite">
-                    <p></p>
-                  </div>
-                  <div className="arrow arrow_left"></div>
-                  <div className="arrow arrow_right"></div>
-                </div>
-                <div className="item-desc">
-                  <h4 className="item-name">Ботинки женские</h4>
-                  <p className="item-producer">Производитель: <span className="producer">Norma J.Baker</span></p>
-                  <p className="item-price">23 150</p>
-                  <div className="sizes">
-                    <p className="sizes__title">Размеры в наличии:</p>
-                    <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
-                  </div>
-                </div>
-              </a>
-              <a className="item-list__item-card item" href="product-card-desktop.html">
-                <div className="item-pic"><img className="item-pic-3"
-                                               src="img/catalogue-pics/product-catalogue__item-3.png"
-                                               alt="Босоножки женские"/>
-                  <div className="product-catalogue__product_favorite">
-                    <p></p>
-                  </div>
-                  <div className="arrow arrow_left"></div>
-                  <div className="arrow arrow_right"></div>
-                </div>
-                <div className="item-desc">
-                  <h4 className="item-name">Босоножки женские</h4>
-                  <p className="item-producer">Производитель: <span className="producer">Damlax</span></p>
-                  <p className="item-price">5 390</p>
-                  <div className="sizes">
-                    <p className="sizes__title">Размеры в наличии:</p>
-                    <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
-                  </div>
-                </div>
-              </a>
-              <a className="item-list__item-card item" href="product-card-desktop.html">
-                <div className="item-pic"><img className="item-pic-4"
-                                               src="img/catalogue-pics/product-catalogue__item-4.png"
-                                               alt="Кроссовки женские"/>
-                  <div className="product-catalogue__product_favorite">
-                    <p></p>
-                  </div>
-                  <div className="arrow arrow_left"></div>
-                  <div className="arrow arrow_right"></div>
-                </div>
-                <div className="item-desc">
-                  <h4 className="item-name">Кроссовки женские</h4>
-                  <p className="item-producer">Производитель: <span className="producer">Damlax</span></p>
-                  <p className="item-price">6 520</p>
-                  <div className="sizes">
-                    <p className="sizes__title">Размеры в наличии:</p>
-                    <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
-                  </div>
-                </div>
-              </a>
-              <a className="item-list__item-card item" href="product-card-desktop.html">
-                <div className="item-pic"><img className="item-pic-5"
-                                               src="img/catalogue-pics/product-catalogue__item-5.png"
-                                               alt="Резиновые полусапоги женские"/>
-                  <div className="product-catalogue__product_favorite">
-                    <p></p>
-                  </div>
-                  <div className="arrow arrow_left"></div>
-                  <div className="arrow arrow_right"></div>
-                </div>
-                <div className="item-desc">
-                  <h4 className="item-name">Резиновые полусапоги женские</h4>
-                  <p className="item-producer">Производитель: <span className="producer">Menghi Shoes</span></p>
-                  <p className="item-price">10 030</p>
-                  <div className="sizes">
-                    <p className="sizes__title">Размеры в наличии:</p>
-                    <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
-                  </div>
-                </div>
-              </a>
-              <a className="item-list__item-card item" href="product-card-desktop.html">
-                <div className="item-pic"><img className="item-pic-6"
-                                               src="img/catalogue-pics/product-catalogue__item-6.png"
-                                               alt="Полусапоги женские"/>
-                  <div className="product-catalogue__product_favorite">
-                    <p></p>
-                  </div>
-                  <div className="arrow arrow_left"></div>
-                  <div className="arrow arrow_right"></div>
-                </div>
-                <div className="item-desc">
-                  <h4 className="item-name">Полусапоги женские</h4>
-                  <p className="item-producer">Производитель: <span className="producer">Pegia</span></p>
-                  <p className="item-price">10 140</p>
-                  <div className="sizes">
-                    <p className="sizes__title">Размеры в наличии:</p>
-                    <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
-                  </div>
-                </div>
-              </a>
-              <a className="item-list__item-card item" href="product-card-desktop.html">
-                <div className="item-pic"><img className="item-pic-7"
-                                               src="img/catalogue-pics/product-catalogue__item-7.png"
-                                               alt="Босоножки женские"/>
-                  <div className="product-catalogue__product_favorite">
-                    <p></p>
-                  </div>
-                  <div className="arrow arrow_left"></div>
-                  <div className="arrow arrow_right"></div>
-                </div>
-                <div className="item-desc">
-                  <h4 className="item-name">Босоножки женские</h4>
-                  <p className="item-producer">Производитель: <span className="producer">Baldinini</span></p>
-                  <p className="item-price">25 020</p>
-                  <div className="sizes">
-                    <p className="sizes__title">Размеры в наличии:</p>
-                    <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
-                  </div>
-                </div>
-              </a>
-              <a className="item-list__item-card item" href="product-card-desktop.html">
-                <div className="item-pic"><img className="item-pic-8"
-                                               src="img/catalogue-pics/product-catalogue__item-8.png"
-                                               alt="Туфли женские"/>
-                  <div className="product-catalogue__product_favorite-chosen">
-                    <p></p>
-                  </div>
-                  <div className="arrow arrow_left"></div>
-                  <div className="arrow arrow_right"></div>
-                </div>
-                <div className="item-desc">
-                  <h4 className="item-name">Туфли женские</h4>
-                  <p className="item-producer">Производитель: <span className="producer">Baldini</span></p>
-                  <p className="item-price">18 520</p>
-                  <div className="sizes">
-                    <p className="sizes__title">Размеры в наличии:</p>
-                    <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
-                  </div>
-                </div>
-              </a>
-              <a className="item-list__item-card item" href="product-card-desktop.html">
-                <div className="item-pic"><img className="item-pic-9"
-                                               src="img/catalogue-pics/product-catalogue__item-9.png"
-                                               alt="Полуботинки женские"/>
-                  <div className="product-catalogue__product_favorite-chosen">
-                    <p></p>
-                  </div>
-                  <div className="arrow arrow_left"></div>
-                  <div className="arrow arrow_right"></div>
-                </div>
-                <div className="item-desc">
-                  <h4 className="item-name">Полуботинки женские</h4>
-                  <p className="item-producer">Производитель: <span className="producer">Norma J.Baker</span></p>
-                  <p className="item-price">21 830</p>
-                  <div className="sizes">
-                    <p className="sizes__title">Размеры в наличии:</p>
-                    <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
-                  </div>
-                </div>
-              </a>
-              <a className="item-list__item-card item" href="product-card-desktop.html">
-                <div className="item-pic"><img className="item-pic-10"
-                                               src="img/catalogue-pics/product-catalogue__item-10.png"
-                                               alt="Туфли женские"/>
-                  <div className="product-catalogue__product_favorite">
-                    <p></p>
-                  </div>
-                  <div className="arrow arrow_left"></div>
-                  <div className="arrow arrow_right"></div>
-                </div>
-                <div className="item-desc">
-                  <h4 className="item-name">Туфли женские</h4>
-                  <p className="item-producer">Производитель: <span className="producer">Norma J.Baker</span></p>
-                  <p className="item-price">20 830</p>
-                  <div className="sizes">
-                    <p className="sizes__title">Размеры в наличии:</p>
-                    <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
-                  </div>
-                </div>
-              </a>
-              <a className="item-list__item-card item" href="product-card-desktop.html">
-                <div className="item-pic"><img className="item-pic-11"
-                                               src="img/catalogue-pics/product-catalogue__item-11.png"
-                                               alt="Ботинки женские"/>
-                  <div className="product-catalogue__product_favorite">
-                    <p></p>
-                  </div>
-                  <div className="arrow arrow_left"></div>
-                  <div className="arrow arrow_right"></div>
-                </div>
-                <div className="item-desc">
-                  <h4 className="item-name">Ботинки женские</h4>
-                  <p className="item-producer">Производитель: <span className="producer">Norma J.Baker</span></p>
-                  <p className="item-price">26 240</p>
-                  <div className="sizes">
-                    <p className="sizes__title">Размеры в наличии:</p>
-                    <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
-                  </div>
-                </div>
-              </a>
-              <a className="item-list__item-card item" href="product-card-desktop.html">
-                <div className="item-pic"><img className="item-pic-12"
-                                               src="img/catalogue-pics/product-catalogue__item-12.png"
-                                               alt="Туфли женские"/>
-                  <div className="product-catalogue__product_favorite">
-                    <p></p>
-                  </div>
-                  <div className="arrow arrow_left"></div>
-                  <div className="arrow arrow_right"></div>
-                </div>
-                <div className="item-desc">
-                  <h4 className="item-name">Туфли женские</h4>
-                  <p className="item-producer">Производитель: <span className="producer">Vittorio Virgili</span></p>
-                  <p className="item-price">17 750</p>
-                  <div className="sizes">
-                    <p className="sizes__title">Размеры в наличии:</p>
-                    <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
-                  </div>
-                </div>
-              </a>
-              <a className="item-list__item-card item" href="product-card-desktop.html">
-                <div className="item-pic"><img className="item-pic-13"
-                                               src="img/catalogue-pics/product-catalogue__item-13.png"
-                                               alt="Ботинки женские"/>
-                  <div className="product-catalogue__product_favorite">
-                    <p></p>
-                  </div>
-                  <div className="arrow arrow_left"></div>
-                  <div className="arrow arrow_right"></div>
-                </div>
-                <div className="item-desc">
-                  <h4 className="item-name">Ботинки женские</h4>
-                  <p className="item-producer">Производитель: <span className="producer">Loriblu</span></p>
-                  <p className="item-price">24 700</p>
-                  <div className="sizes">
-                    <p className="sizes__title">Размеры в наличии:</p>
-                    <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
-                  </div>
-                </div>
-              </a>
-              <a className="item-list__item-card item" href="product-card-desktop.html">
-                <div className="item-pic"><img className="item-pic-14"
-                                               src="img/catalogue-pics/product-catalogue__item-14.png"
-                                               alt="Босоножки женские"/>
-                  <div className="product-catalogue__product_favorite">
-                    <p></p>
-                  </div>
-                  <div className="arrow arrow_left"></div>
-                  <div className="arrow arrow_right"></div>
-                </div>
-                <div className="item-desc">
-                  <h4 className="item-name">Босоножки женские</h4>
-                  <p className="item-producer">Производитель: <span className="producer">Damlax</span></p>
-                  <p className="item-price">18 520</p>
-                  <div className="sizes">
-                    <p className="sizes__title">Размеры в наличии:</p>
-                    <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
-                  </div>
-                </div>
-              </a>
-              <a className="item-list__item-card item" href="product-card-desktop.html">
-                <div className="item-pic"><img className="item-pic-15"
-                                               src="img/catalogue-pics/product-catalogue__item-15.png"
-                                               alt="Балетки женские"/>
-                  <div className="product-catalogue__product_favorite">
-                    <p></p>
-                  </div>
-                  <div className="arrow arrow_left"></div>
-                  <div className="arrow arrow_right"></div>
-                </div>
-                <div className="item-desc">
-                  <h4 className="item-name">Балетки женские</h4>
-                  <p className="item-producer">Производитель: <span className="producer">Ballin</span></p>
-                  <p className="item-price">20 730</p>
-                  <div className="sizes">
-                    <p className="sizes__title">Размеры в наличии:</p>
-                    <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
-                  </div>
-                </div>
-              </a>
+                </a>
+              )}
             </section>
 
             <div className="product-catalogue__pagination">

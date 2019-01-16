@@ -21,7 +21,7 @@ export default class Main extends React.Component {
     }
   }
 
-  componentWillMount() {
+  componentDidMount() {
     const params = {
       method: 'GET',
       headers: new Headers({

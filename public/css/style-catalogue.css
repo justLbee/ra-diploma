@@ -253,8 +253,10 @@ a.item-list__item-card {
 
 .item-pic-1 {
   position: relative;
-  top: 16px;
-  left: -1px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .item-pic-2 {
