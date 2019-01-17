@@ -3,8 +3,7 @@ import {Link} from "react-router-dom";
 
 import throttle from './helpers/throttle.js'
 
-import {createBrowserHistory} from "history";
-const history = createBrowserHistory();
+import history from './helpers/history'
 
 export class Catalogue extends React.Component {
   constructor(props) {
@@ -24,15 +23,25 @@ export class Catalogue extends React.Component {
     };
 
     this.search = {
-      type: String,
-      default: ''
+      oldValue: '',
+      searchString: ''
     };
 
+    this.filter = {
+      type: {name: '', value: '', filter: null},
+      price: {name: '', value: '', filter: null},
+      color: {name: '', value: '', filter: null},
+      size: {name: '', value: '', filter: null},
+      reason: {name: '', value: '', filter: null},
+      season: {name: '', value: '', filter: null},
+      brand: {name: '', value: '', filter: null},
+      discount: {name: '', value: '', filter: null}
+    };
     this.throttledUpdatePath = null;
   }
 
   componentDidUpdate(newProps, newState) {
-    if(this.props !== newProps) {
+    if (this.props !== newProps) {
       this.throttledUpdatePath();
     }
   }
@@ -76,7 +85,6 @@ export class Catalogue extends React.Component {
       .then(response => response.json())
       .then(products => {
         this.products = products;
-        console.log(this.products);
         this.setState({
           goods: this.products.goods,
           items: this.products.data,
@@ -88,12 +96,11 @@ export class Catalogue extends React.Component {
       .finally(() => {
         this.getCategory();
         this.hidePreloader(true);
-        console.log(this.state);
       });
   }
 
   hidePreloader(isHidden = false) {
-    if(isHidden) {
+    if (isHidden) {
       this.setState({
         preloader: 'hidden'
       });
@@ -102,11 +109,33 @@ export class Catalogue extends React.Component {
         preloader: ''
       });
     }
+  }
 
+  choseFilter(event, filterType, search) {
+    const filter = event.target;
+
+    if (this.filter[filterType].filter) {
+      console.log(this.filter[filterType]);
+      const replacedString = `&${this.filter[filterType].name}=${this.filter[filterType].value}`;
+      this.search.searchString = this.search.searchString.replace(replacedString, '');
+
+      this.filter[filterType].filter.classList.remove('chosen');
+    }
+
+    filter.classList.add('chosen');
+
+    this.filter[filterType].name = filterType;
+    this.filter[filterType].filter = filter;
+    this.filter[filterType].value = search;
+
+    this.search.oldValue = search;
+    this.search.searchString += `&${filterType}=${search}`;
+
+    history.push(`/catalogue?categoryId=${this.state.category.id}${this.search.searchString}`);
   }
 
   render() {
-    return(
+    return (
       <div>
         <div className={`preloader_wrapper ${this.state.preloader}`}>
           <div className="preloader">
@@ -119,50 +148,52 @@ export class Catalogue extends React.Component {
 
         <div className="site-path">
           <ul className="site-path__items">
-            <li className="site-path__item"><a href="index.html">Главная</a></li>
-            <li className="site-path__item"><a href="#">Женская обувь</a></li>
+            <li className="site-path__item"><Link to="/">Главная</Link></li>
+            <li className="site-path__item"><Link to={{
+              pathname: '/catalogue',
+              search: `?categoryId=${this.state.category.id}`
+            }}>{this.state.category.title}</Link></li>
           </ul>
         </div>
 
         <main className="product-catalogue">
-
           <section className="sidebar">
             <section className="sidebar__division">
               <div className="sidebar__catalogue-list">
                 <div className="sidebar__division-title">
                   <h3>Каталог</h3>
-                  <div className="opener-down"></div>
+                  <div className="opener-down"/>
                 </div>
                 <ul>
-                  <li><a href="#">Балетки</a></li>
-                  <li><a href="#">Босоножки и сандалии</a></li>
-                  <li><a href="#">Ботильоны</a></li>
-                  <li><a href="#">Ботинки</a></li>
-                  <li><a href="#">Ботфорты</a></li>
-                  <li><a href="#">Галоши</a></li>
-                  <li><a href="#">Тапочки</a></li>
-                  <li><a href="#">Туфли</a></li>
-                  <li><a href="#">Сапоги</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'type', 'Балетки')}>Балетки</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'type', 'Босоножки и сандалии')}>Босоножки и сандалии</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'type', 'Ботильоны')}>Ботильоны</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'type', 'Ботинки')}>Ботинки</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'type', 'Ботфорты')}>Ботфорты</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'type', 'Галоши')}>Галоши</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'type', 'Тапочки')}>Тапочки</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'type', 'Туфли')}>Туфли</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'type', 'Сапоги')}>Сапоги</a></li>
                 </ul>
               </div>
             </section>
-            <div className="separator-150 separator-150-1"></div>
+            <div className="separator-150 separator-150-1"/>
             <section className="sidebar__division">
               <div className="sidebar__price">
                 <div className="sidebar__division-title">
                   <h3>Цена</h3>
-                  <div className="opener-down"></div>
+                  <div className="opener-down" />
                 </div>
                 <div className="price-slider">
                   <div className="circle-container">
-                    <div className="circle-1"></div>
-                    <div className="line-white"></div>
-                    <div className="line-colored"></div>
-                    <div className="circle-2"></div>
+                    <div className="circle-1" />
+                    <div className="line-white" />
+                    <div className="line-colored" />
+                    <div className="circle-2" />
                   </div>
                   <div className="counter">
                     <input type="text" className="input-1" value="1000"/>
-                    <div className="input-separator"></div>
+                    <div className="input-separator" />
                     <input type="text" className="input-2" value="30 000"/>
                   </div>
                 </div>
@@ -176,25 +207,26 @@ export class Catalogue extends React.Component {
                   <div className="opener-down"></div>
                 </div>
                 <ul>
-                  <li><a href="#">
+                  <li><a onClick={e => this.choseFilter(e, 'color', 'Бежевый')}>
                     <div className="color beige"></div>
-                    <span className="color-name">Бежевый</span></a></li>
-                  <li><a href="#">
+                    <span className="color-name">Бежевый</span>
+                  </a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'color', 'Белый')}>
                     <div className="color whitesnake"></div>
                     <span className="color-name">Белый</span></a></li>
-                  <li><a href="#">
+                  <li><a onClick={e => this.choseFilter(e, 'color', 'Голубой')}>
                     <div className="color shocking-blue"></div>
                     <span className="color-name">Голубой</span></a></li>
-                  <li><a href="#">
+                  <li><a onClick={e => this.choseFilter(e, 'color', 'Жёлтый')}>
                     <div className="color yellow"></div>
                     <span className="color-name">Жёлтый</span></a></li>
-                  <li><a href="#">
+                  <li><a onClick={e => this.choseFilter(e, 'color', 'Алый')}>
                     <div className="color king-crimson"></div>
                     <span className="color-name">Алый</span></a></li>
-                  <li><a href="#">
+                  <li><a onClick={e => this.choseFilter(e, 'color', 'Фиолетовый')}>
                     <div className="color deep-purple"></div>
                     <span className="color-name">Фиолетовый</span></a></li>
-                  <li><a href="#">
+                  <li><a onClick={e => this.choseFilter(e, 'color', 'Чёрный')}>
                     <div className="color black-sabbath"></div>
                     <span className="color-name">Чёрный</span></a></li>
                 </ul>
@@ -235,44 +267,45 @@ export class Catalogue extends React.Component {
                 </ul>
               </div>
             </section>
-            <div className="separator-150 separator-150-4"></div>
+            <div className="separator-150 separator-150-4"/>
             <section className="sidebar__division">
               <div className="sidebar__heel-height">
                 <div className="sidebar__division-title">
                   <h3>Размер каблука</h3>
-                  <div className="opener-up"></div>
+                  <div className="opener-up"/>
                 </div>
               </div>
             </section>
-            <div className="separator-150 separator-150-5"></div>
+            <div className="separator-150 separator-150-5"/>
             <section className="sidebar__division">
               <div className="sidebar__occasion">
                 <div className="sidebar__division-title">
                   <h3>Повод</h3>
-                  <div className="opener-down"></div>
+                  <div className="opener-down"/>
                 </div>
                 <ul>
-                  <li><a href="#">Офис</a></li>
-                  <li><a href="#">Вечеринка</a></li>
-                  <li><a href="#">Свадьба</a></li>
-                  <li><a href="#">Спорт</a></li>
-                  <li><a href="#">Путешествие</a></li>
-                  <li><a href="#">Свидание</a></li>
-                  <li><a href="#">Дома</a></li>
-                  <li><a href="#">Произвести впечатление</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'reason', 'Офис')}>Офис</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'reason', 'Вечеринка')}>Вечеринка</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'reason', 'Свадьба')}>Свадьба</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'reason', 'Спорт')}>Спорт</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'reason', 'Путешествие')}>Путешествие</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'reason', 'Свидание')}>Свидание</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'reason', 'Дома')}>Дома</a></li>
+                  <li><a onClick={e => this.choseFilter(e, 'reason', 'Произвести впечатление')}>Произвести
+                    впечатление</a></li>
                 </ul>
               </div>
             </section>
-            <div className="separator-150 separator-150-6"></div>
+            <div className="separator-150 separator-150-6"/>
             <section className="sidebar__division">
               <div className="sidebar__season">
                 <div className="sidebar__division-title">
                   <h3>Сезон</h3>
-                  <div className="opener-up"></div>
+                  <div className="opener-up"/>
                 </div>
               </div>
             </section>
-            <div className="separator-150 separator-150-7"></div>
+            <div className="separator-150 separator-150-7"/>
             <section className="sidebar__division">
               <div className="sidebar__brand">
                 <h3>Бренд</h3>
@@ -282,15 +315,16 @@ export class Catalogue extends React.Component {
                 </form>
               </div>
 
-              <label><input type="checkbox" className="checkbox" name="checkbox-disc" /><span
-                className="checkbox-discount"></span> <span className="text-discount">Со скидкой</span></label>
+              <label><input type="checkbox" className="checkbox" name="checkbox-disc"/>
+                <span className="checkbox-discount" />
+                <span className="text-discount">Со скидкой</span></label>
 
-              <div className="separator-240"></div>
+              <div className="separator-240" />
             </section>
 
             <section className="sidebar__division">
               <div className="drop-down">
-                <a href="#"><span className="drop-down-icon"></span>Сбросить</a>
+                <a href="#"><span className="drop-down-icon" />Сбросить</a>
               </div>
             </section>
           </section>
@@ -319,12 +353,12 @@ export class Catalogue extends React.Component {
                   <div className="item-pic"><img className="item-pic-1"
                                                  src={item.images[0]}
                                                  alt={item.title}
-                  width='80%' />
+                                                 width='100%'/>
                     <div className="product-catalogue__product_favorite">
-                      <p></p>
+                      <p />
                     </div>
-                    <div className="arrow arrow_left"></div>
-                    <div className="arrow arrow_right"></div>
+                    <div className="arrow arrow_left" />
+                    <div className="arrow arrow_right" />
                   </div>
                   <div className="item-desc">
                     <h4 className="item-name">{item.title}</h4>
@@ -382,4 +416,63 @@ export class Catalogue extends React.Component {
       </div>
     )
   }
+}
+
+{/*<li><a*/
+}
+{/*onClick={e => this.choseFilter(e, 'type', 'Балетки')}*/
+}
+{/*>*/
+}
+{/*Балетки</a></li>*/
+}
+{/*<li><Link*/
+}
+{/*to={{*/
+}
+{/*pathname: '/catalogue', search: `?categoryId=${this.state.category.id}&type=Босоножки и сандалии`}}*/
+}
+{/*onClick={e => this.choseFilter(e, 'type', 'Босоножки и сандалии')}>Босоножки и сандалии</Link></li>*/
+}
+{/*<li><Link*/
+}
+{/*to={{pathname: '/catalogue', search: `?categoryId=${this.state.category.id}&type=Ботильоны`}}*/
+}
+{/*onClick={e => this.choseFilter(e, 'type', 'Ботильоны')}>Ботильоны</Link></li>*/
+}
+{/*<li><Link*/
+}
+{/*to={{pathname: '/catalogue', search: `?categoryId=${this.state.category.id}&type=Ботинки`}}*/
+}
+{/*onClick={e => this.choseFilter(e, 'type', 'Ботинки')}>Ботинки</Link></li>*/
+}
+{/*<li><Link*/
+}
+{/*to={{pathname: '/catalogue', search: `?categoryId=${this.state.category.id}&type=Ботфорты`}}*/
+}
+{/*onClick={e => this.choseFilter(e, 'type', 'Ботфорты')}>Ботфорты</Link></li>*/
+}
+{/*<li><Link*/
+}
+{/*to={{pathname: '/catalogue', search: `?categoryId=${this.state.category.id}&type=Галоши`}}*/
+}
+{/*onClick={e => this.choseFilter(e, 'type', 'Галоши')}>Галоши</Link></li>*/
+}
+{/*<li><Link*/
+}
+{/*to={{pathname: '/catalogue', search: `?categoryId=${this.state.category.id}&type=Тапочки`}}*/
+}
+{/*onClick={e => this.choseFilter(e, 'type', 'Тапочки')}>Тапочки</Link></li>*/
+}
+{/*<li><Link*/
+}
+{/*to={{pathname: '/catalogue', search: `?categoryId=${this.state.category.id}&type=Туфли`}}*/
+}
+{/*onClick={e => this.choseFilter(e, 'type', 'Туфли')}>Туфли</Link></li>*/
+}
+{/*<li><Link*/
+}
+{/*to={{pathname: '/catalogue', search: `?categoryId=${this.state.category.id}&type=Сапоги`}}*/
+}
+{/*onClick={e => this.choseFilter(e, 'type', 'Сапоги')}>Сапоги</Link></li>*/
 }

@@ -3,6 +3,7 @@ import Header from './js/Header';
 import Main from './js/Main'
 import Footer from './js/Footer'
 import './App.css';
+import history from "./js/helpers/history";
 
 class App extends Component {
   constructor(props) {
@@ -38,7 +39,7 @@ class App extends Component {
       <div>
         <Header />
         <Main/>
-        <Footer />
+        <Footer style='position: fixed'/>
       </div>
     );
   }
