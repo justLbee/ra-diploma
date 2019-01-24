@@ -19,13 +19,19 @@ export class Catalogue extends React.Component {
       items: [],
       offset: 0,
       page: 0,
-      pages: 0
+      pages: 0,
+      minPrice: 1000,
+      maxPrice: 3000,
+      brand: '',
     };
 
     this.search = {
       oldValue: '',
       searchString: ''
     };
+
+    this.sizeFilter = null;
+    this.sizeFilterArr = [];
 
     this.filter = {
       type: {name: '', value: '', filter: null},
@@ -35,7 +41,9 @@ export class Catalogue extends React.Component {
       reason: {name: '', value: '', filter: null},
       season: {name: '', value: '', filter: null},
       brand: {name: '', value: '', filter: null},
-      discount: {name: '', value: '', filter: null}
+      discount: {name: '', value: '', filter: null},
+      minPrice: {name: '', value: '', filter: null},
+      maxPrice: {name: '', value: '', filter: null},
     };
     this.throttledUpdatePath = null;
   }
@@ -49,6 +57,17 @@ export class Catalogue extends React.Component {
   componentDidMount() {
     this.throttledUpdatePath = throttle(this.updatePath, 2000);
     this.getServerData(this.props.location.search);
+
+    // const typeWord = this.props.location.search.substring(20);
+    // const category = Number(this.props.location.search.substr(12, 2));
+    // const listLinks = document.querySelectorAll('ul > li > a');
+    // const searchElement = Array.from(listLinks).find(link => {
+    //   if (link.textContent === typeWord){
+    //     return link;
+    //   }
+    // });
+    //
+    // this.choseFilter(searchElement, 'type', typeWord, category);
   }
 
   getCategory() {
@@ -111,27 +130,93 @@ export class Catalogue extends React.Component {
     }
   }
 
-  choseFilter(event, filterType, search) {
-    const filter = event.target;
+  choseFilter(element, filterType, search, category) {
+    console.log(filterType, search);
+    // const filter = event.target;
+    const filter = element;
 
-    if (this.filter[filterType].filter) {
-      console.log(this.filter[filterType]);
+    if (this.filter[filterType].filter || search === '') {
       const replacedString = `&${this.filter[filterType].name}=${this.filter[filterType].value}`;
       this.search.searchString = this.search.searchString.replace(replacedString, '');
 
-      this.filter[filterType].filter.classList.remove('chosen');
+      if(element.type !== 'text' || element.type !== 'button') {
+        this.filter[filterType].filter.classList.remove('chosen');
+      }
     }
 
-    filter.classList.add('chosen');
+    if(element.type !== 'text') {
+      filter.classList.add('chosen');
+    }
 
     this.filter[filterType].name = filterType;
     this.filter[filterType].filter = filter;
-    this.filter[filterType].value = search;
+
+    if(filterType === 'size' && this.sizeFilterArr.length > 1) {
+      const sizesString = this.sizeFilterArr.join();
+      this.filter[filterType].value = sizesString;
+      this.search.searchString += `&${filterType}=${sizesString}`;
+    } else if(this.sizeFilterArr.length === 1) {
+      this.search.searchString += `&${filterType}=${this.sizeFilterArr[0]}`;
+      this.filter[filterType].value = this.sizeFilterArr[0];
+    }
+    // this.filter[filterType].value = search;
 
     this.search.oldValue = search;
-    this.search.searchString += `&${filterType}=${search}`;
+    // this.search.searchString += `&${filterType}=${search}`;
 
-    history.push(`/catalogue?categoryId=${this.state.category.id}${this.search.searchString}`);
+    category ?
+      history.push(`/catalogue?categoryId=${category}${this.search.searchString}`) :
+      history.push(`/catalogue?categoryId=${this.state.category.id}${this.search.searchString}`);
+  }
+
+  getMinPrice(event) {
+    const minPrice = event.target.value;
+    this.setState({
+      minPrice: minPrice
+    })
+  }
+
+  setMinPrice(event) {
+    this.choseFilter(event.target, 'minPrice', this.state.minPrice);
+  }
+
+  getMaxPrice(event) {
+    const maxPrice = event.target.value;
+    this.setState({
+      maxPrice: maxPrice
+    })
+  }
+
+  setMaxPrice(event) {
+    this.choseFilter(event.target, 'maxPrice', this.state.maxPrice);
+  }
+
+  getFilteredSize(event) {
+    console.log(event.target.checked);
+
+    let sizeNumber = 0;
+    if(event.target.checked) {
+      const selectedSize = event.target.parentNode.querySelector('.label');
+      sizeNumber = Number(selectedSize.textContent);
+
+      this.sizeFilterArr.push(sizeNumber);
+    } else {
+      this.sizeFilterArr.splice(this.sizeFilterArr.indexOf(sizeNumber), 1);
+    }
+
+    this.choseFilter(event.target, 'size', sizeNumber);
+  }
+
+  brandChange(event) {
+    const brandName = event.target.value;
+    this.setState({
+      brand: brandName
+    })
+  }
+
+  brandSearch(event) {
+    event.preventDefault;
+    this.choseFilter(event.target, 'brand', this.state.brand);
   }
 
   render() {
@@ -165,15 +250,15 @@ export class Catalogue extends React.Component {
                   <div className="opener-down"/>
                 </div>
                 <ul>
-                  <li><a onClick={e => this.choseFilter(e, 'type', 'Балетки')}>Балетки</a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'type', 'Босоножки и сандалии')}>Босоножки и сандалии</a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'type', 'Ботильоны')}>Ботильоны</a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'type', 'Ботинки')}>Ботинки</a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'type', 'Ботфорты')}>Ботфорты</a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'type', 'Галоши')}>Галоши</a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'type', 'Тапочки')}>Тапочки</a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'type', 'Туфли')}>Туфли</a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'type', 'Сапоги')}>Сапоги</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'type', 'Балетки')}>Балетки</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'type', 'Босоножки и сандалии')}>Босоножки и сандалии</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'type', 'Ботильоны')}>Ботильоны</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'type', 'Ботинки')}>Ботинки</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'type', 'Ботфорты')}>Ботфорты</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'type', 'Галоши')}>Галоши</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'type', 'Тапочки')}>Тапочки</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'type', 'Туфли')}>Туфли</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'type', 'Сапоги')}>Сапоги</a></li>
                 </ul>
               </div>
             </section>
@@ -192,77 +277,94 @@ export class Catalogue extends React.Component {
                     <div className="circle-2" />
                   </div>
                   <div className="counter">
-                    <input type="text" className="input-1" value="1000"/>
+                    <input type="text" className="input-1"
+                           onChange={e => this.getMinPrice(e)}
+                           onBlur={e => this.setMinPrice(e)}
+                           value={this.state.minPrice}/>
                     <div className="input-separator" />
-                    <input type="text" className="input-2" value="30 000"/>
+                    <input type="text" className="input-2"
+                           onChange={e => this.getMaxPrice(e)}
+                           onBlur={e => this.setMaxPrice(e)}
+                           value={this.state.maxPrice}/>
                   </div>
                 </div>
               </div>
             </section>
-            <div className="separator-150 separator-150-2"></div>
+            <div className="separator-150 separator-150-2" />
             <section className="sidebar__division">
               <div className="sidebar__color">
                 <div className="sidebar__division-title">
                   <h3>Цвет</h3>
-                  <div className="opener-down"></div>
+                  <div className="opener-down" />
                 </div>
                 <ul>
-                  <li><a onClick={e => this.choseFilter(e, 'color', 'Бежевый')}>
-                    <div className="color beige"></div>
+                  <li><a onClick={e => this.choseFilter(e.target, 'color', 'Бежевый')}>
+                    <div className="color beige" />
                     <span className="color-name">Бежевый</span>
                   </a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'color', 'Белый')}>
-                    <div className="color whitesnake"></div>
+                  <li><a onClick={e => this.choseFilter(e.target, 'color', 'Белый')}>
+                    <div className="color whitesnake" />
                     <span className="color-name">Белый</span></a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'color', 'Голубой')}>
-                    <div className="color shocking-blue"></div>
+                  <li><a onClick={e => this.choseFilter(e.target, 'color', 'Голубой')}>
+                    <div className="color shocking-blue" />
                     <span className="color-name">Голубой</span></a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'color', 'Жёлтый')}>
-                    <div className="color yellow"></div>
+                  <li><a onClick={e => this.choseFilter(e.target, 'color', 'Жёлтый')}>
+                    <div className="color yellow" />
                     <span className="color-name">Жёлтый</span></a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'color', 'Алый')}>
-                    <div className="color king-crimson"></div>
+                  <li><a onClick={e => this.choseFilter(e.target, 'color', 'Алый')}>
+                    <div className="color king-crimson" />
                     <span className="color-name">Алый</span></a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'color', 'Фиолетовый')}>
-                    <div className="color deep-purple"></div>
+                  <li><a onClick={e => this.choseFilter(e.target, 'color', 'Фиолетовый')}>
+                    <div className="color deep-purple" />
                     <span className="color-name">Фиолетовый</span></a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'color', 'Чёрный')}>
-                    <div className="color black-sabbath"></div>
+                  <li><a onClick={e => this.choseFilter(e.target, 'color', 'Чёрный')}>
+                    <div className="color black-sabbath" />
                     <span className="color-name">Чёрный</span></a></li>
                 </ul>
               </div>
             </section>
-            <div className="separator-150 separator-150-3"></div>
+            <div className="separator-150 separator-150-3" />
             <section className="sidebar__division">
               <div className="sidebar__size">
                 <div className="sidebar__division-title">
                   <h3>Размер</h3>
-                  <div className="opener-down"></div>
+                  <div className="opener-down" />
                 </div>
                 <ul>
                   <div className="list-1">
-                    <li><label><input type="checkbox" className="checkbox" name="checkbox-31"/><span
-                      className="checkbox-custom"></span> <span className="label">31</span></label></li>
-                    <li><label><input type="checkbox" className="checkbox" name="checkbox-33"/><span
-                      className="checkbox-custom"></span> <span className="label">33</span></label></li>
-                    <li><label><input type="checkbox" className="checkbox" name="checkbox-35"/><span
-                      className="checkbox-custom"></span> <span className="label">35</span></label></li>
-                    <li><label><input type="checkbox" className="checkbox" name="checkbox-37"/><span
-                      className="checkbox-custom"></span> <span className="label">37</span></label></li>
-                    <li><label><input type="checkbox" className="checkbox" name="checkbox-39"/><span
-                      className="checkbox-custom"></span> <span className="label">39</span></label></li>
+                    <li><label>
+                      <input type="checkbox" className="checkbox" name="checkbox-31" onChange={e => this.getFilteredSize(e)} />
+                      <span className="checkbox-custom" /> <span className="label">31</span>
+                    </label></li>
+                    <li><label>
+                      <input type="checkbox" className="checkbox" name="checkbox-33" onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom" /> <span className="label">33</span></label></li>
+                    <li><label>
+                      <input type="checkbox" className="checkbox" name="checkbox-35" onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom" /> <span className="label">35</span></label></li>
+                    <li><label>
+                      <input type="checkbox" className="checkbox" name="checkbox-37" onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom" /> <span className="label">37</span></label></li>
+                    <li><label>
+                      <input type="checkbox" className="checkbox" name="checkbox-39" onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom" /> <span className="label">39</span></label></li>
                   </div>
                   <div className="list-2">
-                    <li><label><input type="checkbox" className="checkbox" name="checkbox-32"/><span
-                      className="checkbox-custom"></span> <span className="label">32</span></label></li>
-                    <li><label><input type="checkbox" className="checkbox" name="checkbox-34"/><span
-                      className="checkbox-custom"></span> <span className="label">34</span></label></li>
-                    <li><label><input type="checkbox" className="checkbox" name="checkbox-36" checked/><span
-                      className="checkbox-custom"></span> <span className="label">36</span></label></li>
-                    <li><label><input type="checkbox" className="checkbox" name="checkbox-38"/><span
-                      className="checkbox-custom"></span> <span className="label">38</span></label></li>
-                    <li><label><input type="checkbox" className="checkbox" name="checkbox-40"/><span
-                      className="checkbox-custom"></span> <span className="label">40</span></label></li>
+                    <li><label>
+                      <input type="checkbox" className="checkbox" name="checkbox-32" onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom" /> <span className="label">32</span></label></li>
+                    <li><label>
+                      <input type="checkbox" className="checkbox" name="checkbox-34" onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom" /> <span className="label">34</span></label></li>
+                    <li><label>
+                      <input type="checkbox" className="checkbox" name="checkbox-36" onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom" /> <span className="label">36</span></label></li>
+                    <li><label>
+                      <input type="checkbox" className="checkbox" name="checkbox-38" onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom" /> <span className="label">38</span></label></li>
+                    <li><label>
+                      <input type="checkbox" className="checkbox" name="checkbox-40" onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom" /> <span className="label">40</span></label></li>
                   </div>
                 </ul>
               </div>
@@ -284,14 +386,14 @@ export class Catalogue extends React.Component {
                   <div className="opener-down"/>
                 </div>
                 <ul>
-                  <li><a onClick={e => this.choseFilter(e, 'reason', 'Офис')}>Офис</a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'reason', 'Вечеринка')}>Вечеринка</a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'reason', 'Свадьба')}>Свадьба</a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'reason', 'Спорт')}>Спорт</a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'reason', 'Путешествие')}>Путешествие</a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'reason', 'Свидание')}>Свидание</a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'reason', 'Дома')}>Дома</a></li>
-                  <li><a onClick={e => this.choseFilter(e, 'reason', 'Произвести впечатление')}>Произвести
+                  <li><a onClick={e => this.choseFilter(e.target, 'reason', 'Офис')}>Офис</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'reason', 'Вечеринка')}>Вечеринка</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'reason', 'Свадьба')}>Свадьба</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'reason', 'Спорт')}>Спорт</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'reason', 'Путешествие')}>Путешествие</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'reason', 'Свидание')}>Свидание</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'reason', 'Дома')}>Дома</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'reason', 'Произвести впечатление')}>Произвести
                     впечатление</a></li>
                 </ul>
               </div>
@@ -310,8 +412,20 @@ export class Catalogue extends React.Component {
               <div className="sidebar__brand">
                 <h3>Бренд</h3>
                 <form action="post" className="brand-search">
-                  <input type="search" className="brand-search" id="brand-search" placeholder="Поиск"/>
-                  <input type="submit" name="" value="" className="submit"/>
+                  <input
+                    type="search"
+                    className="brand-search"
+                    id="brand-search"
+                    placeholder="Поиск"
+                    onChange={e => this.brandChange(e)}
+                  />
+                  <input
+                    type="button"
+                    name=""
+                    value=""
+                    className="submit"
+                    onClick={e => this.brandSearch(e)}
+                  />
                 </form>
               </div>
 
@@ -324,7 +438,9 @@ export class Catalogue extends React.Component {
 
             <section className="sidebar__division">
               <div className="drop-down">
-                <a href="#"><span className="drop-down-icon" />Сбросить</a>
+                <Link to={{
+                  pathname: '/catalogue',
+                  search: `?categoryId=${this.state.category.id}`}}><span className="drop-down-icon" />Сбросить</Link>
               </div>
             </section>
           </section>
