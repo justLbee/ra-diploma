@@ -30,8 +30,8 @@ export class Catalogue extends React.Component {
       searchString: ''
     };
 
-    this.sizeFilter = null;
     this.sizeFilterArr = [];
+    this.pagesArr = [];
 
     this.filter = {
       type: {name: '', value: '', filter: null},
@@ -44,6 +44,8 @@ export class Catalogue extends React.Component {
       discount: {name: '', value: '', filter: null},
       minPrice: {name: '', value: '', filter: null},
       maxPrice: {name: '', value: '', filter: null},
+      page: {name: '', value: '', filter: null},
+      discounted: {name: '', value: '', filter: null}
     };
     this.throttledUpdatePath = null;
   }
@@ -51,6 +53,12 @@ export class Catalogue extends React.Component {
   componentDidUpdate(newProps, newState) {
     if (this.props !== newProps) {
       this.throttledUpdatePath();
+    }
+
+    this.pagesArr = [];
+
+    for(let i = 0; i < this.state.pages; i++) {
+      this.pagesArr.push(i+1);
     }
   }
 
@@ -103,6 +111,7 @@ export class Catalogue extends React.Component {
     fetch(`https://neto-api.herokuapp.com/bosa-noga/products${request}`, params)
       .then(response => response.json())
       .then(products => {
+        console.log(products);
         this.products = products;
         this.setState({
           goods: this.products.goods,
@@ -131,21 +140,38 @@ export class Catalogue extends React.Component {
   }
 
   choseFilter(element, filterType, search, category) {
-    console.log(filterType, search);
-    // const filter = event.target;
     const filter = element;
+
+    const replacedPage = `&page=${this.filter.page.value}`;
+    this.search.searchString = this.search.searchString.replace(replacedPage, '');
 
     if (this.filter[filterType].filter || search === '') {
       const replacedString = `&${this.filter[filterType].name}=${this.filter[filterType].value}`;
       this.search.searchString = this.search.searchString.replace(replacedString, '');
 
-      if(element.type !== 'text' || element.type !== 'button') {
-        this.filter[filterType].filter.classList.remove('chosen');
+      switch(filterType){
+        case 'type':
+          this.filter[filterType].filter.classList.remove('chosen');
+          break;
+        case 'color':
+          this.filter[filterType].filter.classList.remove('chosen');
+          break;
+        case 'reason':
+          this.filter[filterType].filter.classList.remove('chosen');
+          break;
       }
     }
 
-    if(element.type !== 'text') {
-      filter.classList.add('chosen');
+    switch(filterType){
+      case 'type':
+        filter.classList.add('chosen');
+        break;
+      case 'color':
+        filter.classList.add('chosen');
+        break;
+      case 'page':
+        document.querySelector('.active').classList.remove('active');
+        filter.parentNode.classList.add('active');
     }
 
     this.filter[filterType].name = filterType;
@@ -155,14 +181,25 @@ export class Catalogue extends React.Component {
       const sizesString = this.sizeFilterArr.join();
       this.filter[filterType].value = sizesString;
       this.search.searchString += `&${filterType}=${sizesString}`;
-    } else if(this.sizeFilterArr.length === 1) {
+    }
+    else if(filterType === 'size' && this.sizeFilterArr.length === 1) {
       this.search.searchString += `&${filterType}=${this.sizeFilterArr[0]}`;
       this.filter[filterType].value = this.sizeFilterArr[0];
     }
-    // this.filter[filterType].value = search;
+    else if(filterType === 'size' && this.sizeFilterArr.length === 0) {
+      this.search.searchString += '';
+    }
+    else {
+      this.search.searchString += `&${filterType}=${search}`;
+      this.filter[filterType].value = search;
+    }
+
+    if(filterType === 'discounted' && !search) {
+      const replacedDiscount = `&discounted=false`;
+      this.search.searchString = this.search.searchString.replace(replacedDiscount, '');
+    }
 
     this.search.oldValue = search;
-    // this.search.searchString += `&${filterType}=${search}`;
 
     category ?
       history.push(`/catalogue?categoryId=${category}${this.search.searchString}`) :
@@ -171,13 +208,28 @@ export class Catalogue extends React.Component {
 
   getMinPrice(event) {
     const minPrice = event.target.value;
+
     this.setState({
       minPrice: minPrice
     })
   }
 
   setMinPrice(event) {
-    this.choseFilter(event.target, 'minPrice', this.state.minPrice);
+    const maxPriceEl = document.querySelector('.max-price');
+    const maxPrice = maxPriceEl.value;
+    let minPrice = this.state.minPrice;
+
+    if (minPrice > maxPrice) {
+      minPrice = maxPrice - 1;
+
+      this.setState({
+        minPrice: minPrice,
+        maxPrice: maxPrice
+      })
+    }
+
+    this.choseFilter(maxPriceEl, 'maxPrice', maxPrice);
+    this.choseFilter(event.target, 'minPrice', minPrice);
   }
 
   getMaxPrice(event) {
@@ -188,7 +240,21 @@ export class Catalogue extends React.Component {
   }
 
   setMaxPrice(event) {
-    this.choseFilter(event.target, 'maxPrice', this.state.maxPrice);
+    const minPriceEl = document.querySelector('.min-price');
+    const minPrice = minPriceEl.value;
+    let maxPrice = this.state.minPrice;
+
+    if (maxPrice < minPrice) {
+      maxPrice = minPrice + 1;
+
+      this.setState({
+        minPrice: minPrice,
+        maxPrice: maxPrice
+      })
+    }
+
+    this.choseFilter(minPriceEl, 'minPrice', minPrice);
+    this.choseFilter(event.target, 'maxPrice', maxPrice);
   }
 
   getFilteredSize(event) {
@@ -219,6 +285,32 @@ export class Catalogue extends React.Component {
     this.choseFilter(event.target, 'brand', this.state.brand);
   }
 
+  changePage(event, isForward) {
+    const currentPageEl = document.querySelector('.active').firstElementChild;
+    let currentPageNum = Number(currentPageEl.textContent);
+
+    if(isForward) {
+      currentPageNum < this.pagesArr.length ? currentPageNum++:currentPageNum;
+    }
+    else {
+      currentPageNum > 1 ? currentPageNum--:currentPageNum;
+    }
+
+    const nextPage = document.getElementById(`${currentPageNum}`).firstElementChild;
+    this.choseFilter(nextPage, 'page', currentPageNum);
+  }
+
+  clearFilters() {
+    this.search.searchString = '';
+  }
+
+  getDiscounted(event) {
+    console.log(event.target.checked);
+    const isDiscounted = event.target.checked;
+
+    this.choseFilter(event.target, 'discounted', isDiscounted);
+  }
+
   render() {
     return (
       <div>
@@ -234,7 +326,9 @@ export class Catalogue extends React.Component {
         <div className="site-path">
           <ul className="site-path__items">
             <li className="site-path__item"><Link to="/">Главная</Link></li>
-            <li className="site-path__item"><Link to={{
+            <li className="site-path__item"><Link
+              onClick={e => this.clearFilters(e)}
+              to={{
               pathname: '/catalogue',
               search: `?categoryId=${this.state.category.id}`
             }}>{this.state.category.title}</Link></li>
@@ -277,12 +371,12 @@ export class Catalogue extends React.Component {
                     <div className="circle-2" />
                   </div>
                   <div className="counter">
-                    <input type="text" className="input-1"
+                    <input type="text" className="input-1 min-price"
                            onChange={e => this.getMinPrice(e)}
                            onBlur={e => this.setMinPrice(e)}
                            value={this.state.minPrice}/>
                     <div className="input-separator" />
-                    <input type="text" className="input-2"
+                    <input type="text" className="input-2 max-price"
                            onChange={e => this.getMaxPrice(e)}
                            onBlur={e => this.setMaxPrice(e)}
                            value={this.state.maxPrice}/>
@@ -411,7 +505,7 @@ export class Catalogue extends React.Component {
             <section className="sidebar__division">
               <div className="sidebar__brand">
                 <h3>Бренд</h3>
-                <form action="post" className="brand-search">
+                <form action="" className="brand-search">
                   <input
                     type="search"
                     className="brand-search"
@@ -429,7 +523,11 @@ export class Catalogue extends React.Component {
                 </form>
               </div>
 
-              <label><input type="checkbox" className="checkbox" name="checkbox-disc"/>
+              <label><input
+                onChange={e => this.getDiscounted(e)}
+                type="checkbox"
+                className="checkbox"
+                name="checkbox-disc"/>
                 <span className="checkbox-discount" />
                 <span className="text-discount">Со скидкой</span></label>
 
@@ -438,7 +536,9 @@ export class Catalogue extends React.Component {
 
             <section className="sidebar__division">
               <div className="drop-down">
-                <Link to={{
+                <Link
+                  onClick={e => this.clearFilters(e)}
+                  to={{
                   pathname: '/catalogue',
                   search: `?categoryId=${this.state.category.id}`}}><span className="drop-down-icon" />Сбросить</Link>
               </div>
@@ -491,17 +591,19 @@ export class Catalogue extends React.Component {
 
             <div className="product-catalogue__pagination">
               <div className="page-nav-wrapper">
-                <div className="angle-back"><a href="#"></a></div>
+                <div className="angle-back"><a onClick={e => this.changePage(e, false)} /></div>
                 <ul>
-                  <li className="active"><a href="#">1</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li><a href="#">4</a></li>
-                  <li><a href="#">5</a></li>
-                  <li><a href="">...</a></li>
-                  <li><a href="#">99</a></li>
+                  {
+                    this.pagesArr.map(page =>
+                      <li
+                        key={page}
+                        id={page}
+                        className={page === 1 ? 'active':''}><a
+                        onClick={e => this.choseFilter(e.target, 'page', `${page}`)}>{page}</a></li>
+                    )
+                  }
                 </ul>
-                <div className="angle-forward"><a href="#"></a></div>
+                <div className="angle-forward"><a onClick={e => this.changePage(e, true)} /></div>
               </div>
             </div>
           </section>
