@@ -597,7 +597,8 @@ export class Catalogue extends React.Component {
 
             <div className="product-catalogue__pagination">
               <div className="page-nav-wrapper">
-                <div className="angle-back"><a onClick={e => this.changePage(e, false)} /></div>
+                {this.filter.page.value > 1 ?
+                  <div className="angle-back"><a onClick={e => this.changePage(e, false)} /></div>:null}
                 <ul>
                   {
                     this.pagesArr.map(page =>
@@ -609,7 +610,8 @@ export class Catalogue extends React.Component {
                     )
                   }
                 </ul>
-                <div className="angle-forward"><a onClick={e => this.changePage(e, true)} /></div>
+                {this.filter.page.value < this.pagesArr.length ?
+                  <div className="angle-forward"><a onClick={e => this.changePage(e, true)} /></div>:null}
               </div>
             </div>
           </section>
