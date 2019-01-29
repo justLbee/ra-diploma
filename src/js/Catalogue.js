@@ -45,7 +45,8 @@ export class Catalogue extends React.Component {
       minPrice: {name: '', value: '', filter: null},
       maxPrice: {name: '', value: '', filter: null},
       page: {name: '', value: '', filter: null},
-      discounted: {name: '', value: '', filter: null}
+      discounted: {name: '', value: '', filter: null},
+      sortBy: {name: '', value: '', filter: null}
     };
     this.throttledUpdatePath = null;
   }
@@ -169,6 +170,9 @@ export class Catalogue extends React.Component {
       case 'color':
         filter.classList.add('chosen');
         break;
+      case 'reason':
+        filter.classList.add('chosen');
+        break;
       case 'page':
         document.querySelector('.active').classList.remove('active');
         filter.parentNode.classList.add('active');
@@ -258,8 +262,6 @@ export class Catalogue extends React.Component {
   }
 
   getFilteredSize(event) {
-    console.log(event.target.checked);
-
     let sizeNumber = 0;
     if(event.target.checked) {
       const selectedSize = event.target.parentNode.querySelector('.label');
@@ -305,10 +307,15 @@ export class Catalogue extends React.Component {
   }
 
   getDiscounted(event) {
-    console.log(event.target.checked);
     const isDiscounted = event.target.checked;
 
     this.choseFilter(event.target, 'discounted', isDiscounted);
+  }
+
+  sortChange(event) {
+    const sortingBy = event.target.value;
+
+    this.choseFilter(event.target, 'sortBy', sortingBy);
   }
 
   render() {
@@ -554,10 +561,9 @@ export class Catalogue extends React.Component {
               </div>
               <div className="product-catalogue__sort-by">
                 <p className="sort-by">Сортировать</p>
-                <select name="" id="sorting">
-                  <option value="">по популярности</option>
-                  <option value="">по размеру</option>
-                  <option value="">по производителю</option>
+                <select name="" id="sorting" onChange={event => this.sortChange(event)}>
+                  <option value="popularity">по популярности</option>
+                  <option value="price">по цене</option>
                 </select>
               </div>
             </section>
@@ -565,7 +571,7 @@ export class Catalogue extends React.Component {
             <section className="product-catalogue__item-list">
 
               {this.state.items.map(item =>
-                <a key={item.id} className="item-list__item-card item" href="product-card-desktop.html">
+                <a key={item.id} className="item-list__item-card item">
                   <div className="item-pic"><img className="item-pic-1"
                                                  src={item.images[0]}
                                                  alt={item.title}
