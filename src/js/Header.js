@@ -13,6 +13,14 @@ export default class Header extends React.Component {
     this.category = '';
     this.categoryId = 0;
     this.pathName = '';
+
+    this.headerPanel = null;
+    this.profilePanel = null;
+  }
+
+  componentDidMount() {
+    this.headerPanel = document.querySelector('.header-main__hidden-panel');
+    this.profilePanel = document.querySelector('.hidden-panel__profile');
   }
 
   mainMenuClicked(event) {
@@ -77,6 +85,29 @@ export default class Header extends React.Component {
     this.showDropMenu(false, this.category);
   }
 
+  headerPanelClick(event) {
+    if(this.headerPanel.classList.contains('header-main__hidden-panel_visible')){
+      this.showHeaderPanelMenu(false, event.target);
+    }
+    else {
+      this.showHeaderPanelMenu(true, event.target);
+    }
+  }
+
+  showHeaderPanelMenu(isOpen, element) {
+    if(isOpen) {
+      this.headerPanel.classList.add('header-main__hidden-panel_visible');
+    }
+    else {
+      this.headerPanel.classList.remove('header-main__hidden-panel_visible');
+      return;
+    }
+
+    if(element.classList.contains('header-main__pic_profile')) {
+      this.profilePanel.classList.add('hidden-panel__profile_visible');
+    }
+  }
+
   render() {
     return (
       <div>
@@ -124,7 +155,7 @@ export default class Header extends React.Component {
 
                     </div>
                     <div className="header-main__pic_border" />
-                    <div className="header-main__pic header-main__pic_profile">
+                    <div className="header-main__pic header-main__pic_profile" onClick={event => this.headerPanelClick(event)}>
                       <div className="header-main__pic_profile_menu" />
                     </div>
                     <div className="header-main__pic_border" />
@@ -144,8 +175,8 @@ export default class Header extends React.Component {
                 <div className="wrapper">
                   <div className="hidden-panel__profile">
                     <a href="#">Личный кабинет</a>
-                    <a href="favorite.html">
-                      <i className="fa fa-heart-o" aria-hidden="true"></i>Избранное</a>
+                    <Link onClick={e => this.showHeaderPanelMenu(false)} to='/favorite'>
+                      <i className="fa fa-heart-o" aria-hidden="true" />Избранное</Link>
                     <a href="#">Выйти</a>
                   </div>
                   <div className="hidden-panel__basket basket-dropped">
@@ -237,8 +268,8 @@ export default class Header extends React.Component {
                   </li>
                 </ul>
               </div>
-
             </nav>
+
             <div className="dropped-menu">
               <div className="wrapper">
                 <div className="dropped-menu__lists dropped-menu__lists_women">

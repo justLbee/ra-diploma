@@ -5,7 +5,7 @@ import throttle from './helpers/throttle.js'
 
 import history from './helpers/history'
 import Favorites from './helpers/favorites'
-const favorite = new Favorites()
+const favorite = new Favorites();
 
 export class Catalogue extends React.Component {
   constructor(props) {
