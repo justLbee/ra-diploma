@@ -39,4 +39,8 @@ export default class favorites {
 
     localStorage.setItem('favorites', JSON.stringify(this.favoritesArr));
   }
+
+  getFavorites() {
+    return JSON.parse(localStorage.getItem('favorites'));
+  }
 }

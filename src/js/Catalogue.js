@@ -593,7 +593,7 @@ export class Catalogue extends React.Component {
                     <p className="item-price">{item.price}</p>
                     <div className="sizes">
                       <p className="sizes__title">Размеры в наличии:</p>
-                      <p className="sizes__avalible">36, 37, 38, 39, 40, 41, 42</p>
+                      <p className="sizes__avalible">{item.sizes.map(size => {return size.size}).join()}</p>
                     </div>
                   </div>
                 </a>
