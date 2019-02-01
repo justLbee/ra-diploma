@@ -39,7 +39,7 @@ class App extends Component {
       <div>
         <Header />
         <Main/>
-        <Footer style='position: fixed'/>
+        <Footer/>
       </div>
     );
   }

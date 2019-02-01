@@ -4,13 +4,13 @@ import {Link} from "react-router-dom";
 import throttle from './helpers/throttle.js'
 
 import history from './helpers/history'
+import Favorites from './helpers/favorites'
+const favorite = new Favorites()
 
 export class Catalogue extends React.Component {
   constructor(props) {
     super(props);
     this.products = {};
-    // this.categories = this.props.categories;
-    // this.category = '';
 
     this.state = {
       preloader: '',
@@ -66,17 +66,6 @@ export class Catalogue extends React.Component {
   componentDidMount() {
     this.throttledUpdatePath = throttle(this.updatePath, 2000);
     this.getServerData(this.props.location.search);
-
-    // const typeWord = this.props.location.search.substring(20);
-    // const category = Number(this.props.location.search.substr(12, 2));
-    // const listLinks = document.querySelectorAll('ul > li > a');
-    // const searchElement = Array.from(listLinks).find(link => {
-    //   if (link.textContent === typeWord){
-    //     return link;
-    //   }
-    // });
-    //
-    // this.choseFilter(searchElement, 'type', typeWord, category);
   }
 
   getCategory() {
@@ -316,6 +305,22 @@ export class Catalogue extends React.Component {
     const sortingBy = event.target.value;
 
     this.choseFilter(event.target, 'sortBy', sortingBy);
+  }
+
+  addToFavorite(event, id) {
+    const itemElement = event.target;
+
+    if(itemElement.parentNode.classList.contains('product-catalogue__product_favorite')){
+      itemElement.parentNode.classList.remove('product-catalogue__product_favorite');
+      itemElement.parentNode.classList.add('product-catalogue__product_favorite-chosen');
+
+      favorite.add(id);
+    } else {
+      itemElement.classList.add('product-catalogue__product_favorite');
+      itemElement.classList.remove('product-catalogue__product_favorite-chosen');
+
+      favorite.remove(id)
+    }
   }
 
   render() {
@@ -576,7 +581,7 @@ export class Catalogue extends React.Component {
                                                  src={item.images[0]}
                                                  alt={item.title}
                                                  width='100%'/>
-                    <div className="product-catalogue__product_favorite">
+                    <div className="product-catalogue__product_favorite" onClick={event => this.addToFavorite(event, item.id)}>
                       <p />
                     </div>
                     <div className="arrow arrow_left" />
@@ -642,63 +647,4 @@ export class Catalogue extends React.Component {
       </div>
     )
   }
-}
-
-{/*<li><a*/
-}
-{/*onClick={e => this.choseFilter(e, 'type', 'Балетки')}*/
-}
-{/*>*/
-}
-{/*Балетки</a></li>*/
-}
-{/*<li><Link*/
-}
-{/*to={{*/
-}
-{/*pathname: '/catalogue', search: `?categoryId=${this.state.category.id}&type=Босоножки и сандалии`}}*/
-}
-{/*onClick={e => this.choseFilter(e, 'type', 'Босоножки и сандалии')}>Босоножки и сандалии</Link></li>*/
-}
-{/*<li><Link*/
-}
-{/*to={{pathname: '/catalogue', search: `?categoryId=${this.state.category.id}&type=Ботильоны`}}*/
-}
-{/*onClick={e => this.choseFilter(e, 'type', 'Ботильоны')}>Ботильоны</Link></li>*/
-}
-{/*<li><Link*/
-}
-{/*to={{pathname: '/catalogue', search: `?categoryId=${this.state.category.id}&type=Ботинки`}}*/
-}
-{/*onClick={e => this.choseFilter(e, 'type', 'Ботинки')}>Ботинки</Link></li>*/
-}
-{/*<li><Link*/
-}
-{/*to={{pathname: '/catalogue', search: `?categoryId=${this.state.category.id}&type=Ботфорты`}}*/
-}
-{/*onClick={e => this.choseFilter(e, 'type', 'Ботфорты')}>Ботфорты</Link></li>*/
-}
-{/*<li><Link*/
-}
-{/*to={{pathname: '/catalogue', search: `?categoryId=${this.state.category.id}&type=Галоши`}}*/
-}
-{/*onClick={e => this.choseFilter(e, 'type', 'Галоши')}>Галоши</Link></li>*/
-}
-{/*<li><Link*/
-}
-{/*to={{pathname: '/catalogue', search: `?categoryId=${this.state.category.id}&type=Тапочки`}}*/
-}
-{/*onClick={e => this.choseFilter(e, 'type', 'Тапочки')}>Тапочки</Link></li>*/
-}
-{/*<li><Link*/
-}
-{/*to={{pathname: '/catalogue', search: `?categoryId=${this.state.category.id}&type=Туфли`}}*/
-}
-{/*onClick={e => this.choseFilter(e, 'type', 'Туфли')}>Туфли</Link></li>*/
-}
-{/*<li><Link*/
-}
-{/*to={{pathname: '/catalogue', search: `?categoryId=${this.state.category.id}&type=Сапоги`}}*/
-}
-{/*onClick={e => this.choseFilter(e, 'type', 'Сапоги')}>Сапоги</Link></li>*/
 }
