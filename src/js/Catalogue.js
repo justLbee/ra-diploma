@@ -5,7 +5,10 @@ import throttle from './helpers/throttle.js'
 
 import history from './helpers/history'
 import Favorites from './helpers/favorites'
+import Paginator from './helpers/paginator'
+
 const favorite = new Favorites();
+
 
 export class Catalogue extends React.Component {
   constructor(props) {
@@ -23,6 +26,7 @@ export class Catalogue extends React.Component {
       minPrice: 1000,
       maxPrice: 3000,
       brand: '',
+      sizes: [],
     };
 
     this.search = {
@@ -49,6 +53,11 @@ export class Catalogue extends React.Component {
       sortBy: {name: '', value: '', filter: null}
     };
     this.throttledUpdatePath = null;
+
+    this.sizesArr = [];
+
+    this.prevPage = false;
+    this.nextPage = false;
   }
 
   componentDidUpdate(newProps, newState) {
@@ -103,18 +112,28 @@ export class Catalogue extends React.Component {
       .then(products => {
         console.log(products);
         this.products = products;
+
+        this.products.data.forEach(product => {
+          this.sizeGetter(product.id);
+        });
+
         this.setState({
           goods: this.products.goods,
           items: this.products.data,
           page: this.products.page,
           pages: this.products.pages,
-          offset: this.products.offset
+          offset: this.products.offset,
+          sizes: this.sizesArr
         })
       })
       .finally(() => {
         this.getCategory();
         this.hidePreloader(true);
       });
+
+    if(this.state.pages > 1) {
+      this.nextPage = true;
+    }
   }
 
   hidePreloader(isHidden = false) {
@@ -321,6 +340,30 @@ export class Catalogue extends React.Component {
 
       favorite.remove(id)
     }
+  }
+
+  sizeGetter(id) {
+    this.hidePreloader(false);
+    const params = {
+      method: 'GET',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+    };
+
+    fetch(`https://neto-api.herokuapp.com/bosa-noga/products/${id}`, params)
+      .then(response => response.json())
+      .then(product => {
+
+        const sizesStr = product.data.sizes.map(size => {return size.size}).join();
+        const sizeId = product.data.id;
+        const sizeObj = {sizeId, sizesStr};
+
+        this.sizesArr.push(sizeObj);
+      })
+      .finally(() => {
+        this.hidePreloader(true);
+      });
   }
 
   render() {
@@ -593,32 +636,41 @@ export class Catalogue extends React.Component {
                     <p className="item-price">{item.price}</p>
                     <div className="sizes">
                       <p className="sizes__title">Размеры в наличии:</p>
-                      <p className="sizes__avalible">{item.sizes.map(size => {return size.size}).join()}</p>
+                      <p className="sizes__avalible">
+                        {
+                          this.state.sizes.find(size => size.sizeId === item.id) ?
+                          this.state.sizes.find(size => size.sizeId === item.id).sizesStr:''
+                        }
+                      </p>
                     </div>
                   </div>
                 </a>
               )}
             </section>
 
-            <div className="product-catalogue__pagination">
-              <div className="page-nav-wrapper">
-                {this.filter.page.value > 1 ?
-                  <div className="angle-back"><a onClick={e => this.changePage(e, false)} /></div>:null}
-                <ul>
-                  {
-                    this.pagesArr.map(page =>
-                      <li
-                        key={page}
-                        id={page}
-                        className={page === 1 ? 'active':''}><a
-                        onClick={e => this.choseFilter(e.target, 'page', `${page}`)}>{page}</a></li>
-                    )
-                  }
-                </ul>
-                {this.filter.page.value < this.pagesArr.length ?
-                  <div className="angle-forward"><a onClick={e => this.changePage(e, true)} /></div>:null}
-              </div>
-            </div>
+            <Paginator
+              pagesArr={this.pagesArr}
+              prevPage={this.prevPage}
+              nextPage={this.state.pages > 1}/>
+            {/*<div className="product-catalogue__pagination">*/}
+              {/*<div className="page-nav-wrapper">*/}
+                {/*{this.filter.page.value > 1 ?*/}
+                  {/*<div className="angle-back"><a onClick={e => this.changePage(e, false)} /></div>:null}*/}
+                {/*<ul>*/}
+                  {/*{*/}
+                    {/*this.pagesArr.map(page =>*/}
+                      {/*<li*/}
+                        {/*key={page}*/}
+                        {/*id={page}*/}
+                        {/*className={page === 1 ? 'active':''}><a*/}
+                        {/*onClick={e => this.choseFilter(e.target, 'page', `${page}`)}>{page}</a></li>*/}
+                    {/*)*/}
+                  {/*}*/}
+                {/*</ul>*/}
+                {/*{this.filter.page.value < this.pagesArr.length ?*/}
+                  {/*<div className="angle-forward"><a onClick={e => this.changePage(e, true)} /></div>:null}*/}
+              {/*</div>*/}
+            {/*</div>*/}
           </section>
         </main>
 
