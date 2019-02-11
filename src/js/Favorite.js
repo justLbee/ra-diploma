@@ -3,6 +3,7 @@ import {Link} from "react-router-dom";
 
 import history from './helpers/history'
 import Favorites from './helpers/favorites'
+import Paginator from './helpers/paginator'
 
 const favorite = new Favorites();
 
@@ -15,7 +16,9 @@ export class Favorite extends React.Component {
     this.state = {
       preloader: '',
       goods: []
-    }
+    };
+
+    this.pagesArr = [1];
   }
 
   componentWillMount() {
@@ -25,6 +28,7 @@ export class Favorite extends React.Component {
     this.setState({
       goods: this.favoriteGoods
     });
+
   }
 
   componentDidMount() {
@@ -42,6 +46,16 @@ export class Favorite extends React.Component {
         preloader: ''
       });
     }
+  }
+
+  favoriteClick(event, id) {
+    event.preventDefault();
+
+    const itemElement = event.currentTarget.parentNode;
+    const goodNode = itemElement.parentNode;
+
+    favorite.remove(id);
+    goodNode.remove();
   }
 
   render() {
@@ -88,7 +102,8 @@ export class Favorite extends React.Component {
                                                    src={good.images[0]}
                                                    alt={good.title}
                                                    width='100%'/>
-                      <div className="product-catalogue__product_favorite">
+                      <div className="product-catalogue__product_favorite"
+                           onClick={event => this.favoriteClick(event, good.id)}>
                         <p/>
                       </div>
                       <div className="arrow arrow_left"/>
@@ -106,22 +121,10 @@ export class Favorite extends React.Component {
                   </a>
                 )}
               </section>
-              
-              <div className="product-catalogue__pagination">
-                <div className="page-nav-wrapper">
-                  <div className="angle-back"><a href="#"></a></div>
-                  <ul>
-                    <li className="active"><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                    <li><a href="">...</a></li>
-                    <li><a href="#">99</a></li>
-                  </ul>
-                  <div className="angle-forward"><a href="#"></a></div>
-                </div>
-              </div>
+
+              <Paginator
+                pagesArr={this.pagesArr}
+              />
             </main>
           </div>
         </div>

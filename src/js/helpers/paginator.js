@@ -9,14 +9,16 @@ export default class Paginator extends React.Component {
 
     this.state = {
       prevPage: false,
-      nextPage: this.props.nextPage
+      nextPage: false
     };
+
+    this.page = {name: '', value: 1, filter: null};
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
     this.setState({
-      prevPage: nextProps.prevPage,
-      nextPage: nextProps.nextPage
+      prevPage: this.page.value > 1,
+      nextPage: this.page.value < this.props.pagesArr.length
     })
   }
 
@@ -36,17 +38,21 @@ export default class Paginator extends React.Component {
     const nextPage = document.getElementById(`${currentPageNum}`).firstElementChild;
 
     this.changeLocation(nextPage, currentPageNum)
-    // choseFilter(nextPage, 'page', currentPageNum);
   }
 
-  //toDO надо вытаскивать фильтры отдельным файлом ((((((((
   changeLocation(element, currentPageNum) {
+    const currentHref = window.location.search;
+
+    const replacedPage = `&page=${this.page.value}`;
+    let searchString = currentHref.replace(replacedPage, '');
+
+    searchString = `${searchString}&page=${currentPageNum}`;
+
     document.querySelector('.active').classList.remove('active');
     element.parentNode.classList.add('active');
 
-    const currentHref = window.location.search;
-    console.log(currentHref);
-    history.push(`${currentHref}&page=${currentPageNum}`);
+    this.page.value = currentPageNum;
+    history.push(searchString);
   }
 
   render() {

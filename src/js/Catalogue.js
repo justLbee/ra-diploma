@@ -48,7 +48,7 @@ export class Catalogue extends React.Component {
       discount: {name: '', value: '', filter: null},
       minPrice: {name: '', value: '', filter: null},
       maxPrice: {name: '', value: '', filter: null},
-      page: {name: '', value: '', filter: null},
+      // page: {name: '', value: '', filter: null},
       discounted: {name: '', value: '', filter: null},
       sortBy: {name: '', value: '', filter: null}
     };
@@ -151,8 +151,8 @@ export class Catalogue extends React.Component {
   choseFilter(element, filterType, search, category) {
     const filter = element;
 
-    const replacedPage = `&page=${this.filter.page.value}`;
-    this.search.searchString = this.search.searchString.replace(replacedPage, '');
+    // const replacedPage = `&page=${this.filter.page.value}`;
+    // this.search.searchString = this.search.searchString.replace(replacedPage, '');
 
     if (this.filter[filterType].filter || search === '') {
       const replacedString = `&${this.filter[filterType].name}=${this.filter[filterType].value}`;
@@ -650,8 +650,7 @@ export class Catalogue extends React.Component {
 
             <Paginator
               pagesArr={this.pagesArr}
-              prevPage={this.prevPage}
-              nextPage={this.state.pages > 1}/>
+            />
             {/*<div className="product-catalogue__pagination">*/}
               {/*<div className="page-nav-wrapper">*/}
                 {/*{this.filter.page.value > 1 ?*/}
