@@ -8,6 +8,7 @@ import {Contacts} from "./Contacts";
 import {News} from "./News";
 import {Catalogue} from "./Catalogue";
 import {Favorite} from "./Favorite";
+import {ProductCard} from "./ProductCard"
 
 import { Switch, Route } from "react-router-dom";
 
@@ -42,7 +43,7 @@ export default class Main extends React.Component {
   }
 
   WithCatalogue = (props) => {
-    const {categories} = this.state;
+    const {categories} = this.state.categories;
     return (
       <Catalogue
         {...props}
@@ -63,6 +64,7 @@ export default class Main extends React.Component {
           <Route path='/news' component={News}/>
           <Route path='/catalogue' component={this.WithCatalogue}/>
           <Route path='/favorite' component={Favorite}/>
+          <Route path='/product/:id' component={ProductCard}/>
         </Switch>
       </main>
     )

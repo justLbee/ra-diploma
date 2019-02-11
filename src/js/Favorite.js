@@ -74,30 +74,33 @@ export class Favorite extends React.Component {
           <div className="wrapper wrapper_favorite">
             <div className="site-path">
               <ul className="site-path__items">
-                <li className="site-path__item"><a href="index.html">Главная</a></li>
-                <li className="site-path__item"><a href="favorite.html">Избранное</a></li>
+                <li className="site-path__item"><Link to="/">Главная</Link></li>
+                <li className="site-path__item"><Link to="/favorites">Избранное</Link></li>
               </ul>
             </div>
             <main className="product-catalogue product-catalogue_favorite">
               <section className="product-catalogue__head product-catalogue__head_favorite">
                 <div className="product-catalogue__section-title">
-                  <h2 className="section-name">В вашем избранном</h2><span className="amount amount_favorite"> 99 товаров</span>
+                  <h2 className="section-name">В вашем избранном {this.state.goods.length === 0 ? 'пока ничего нет':null}</h2>
+                  {this.state.goods.length > 0 ? <span className="amount amount_favorite"> {this.state.goods.length} товаров</span> : null}
                 </div>
-                <div className="product-catalogue__sort-by">
+                {this.state.goods.length > 0 ? <div className="product-catalogue__sort-by">
                   <p className="sort-by">Сортировать</p>
                   <select id="sorting" name="">
                     <option value="">по дате добавления</option>
                     <option value="">по размеру</option>
                     <option value="">по производителю</option>
                   </select>
-                </div>
+                </div> : null}
+
               </section>
               <section className="product-catalogue__item-list product-catalogue__item-list_favorite">
                 {this.state.goods.map(good =>
-                  <a
+                  <Link
+                    to={`/product/${good.id}`}
                     key={good.id}
                     className="item-list__item-card item"
-                    href="product-card-desktop.html">
+                    >
                     <div className="item-pic"><img className="item-pic-1"
                                                    src={good.images[0]}
                                                    alt={good.title}
@@ -118,13 +121,12 @@ export class Favorite extends React.Component {
                         <p className="sizes__avalible">{good.sizes.map(size => {return size.size}).join()}</p>
                       </div>
                     </div>
-                  </a>
+                  </Link>
                 )}
               </section>
 
-              <Paginator
-                pagesArr={this.pagesArr}
-              />
+              {this.state.goods.length > 0 ? <Paginator pagesArr={this.pagesArr}/>:null}
+
             </main>
           </div>
         </div>

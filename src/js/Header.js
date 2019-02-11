@@ -144,7 +144,7 @@ export default class Header extends React.Component {
                 <div className="header-main__logo">
                   <Link to="/">
                     <h1>
-                      <img src="img/header-logo.png" alt="logotype"/>
+                      <img src="/img/header-logo.png" alt="logotype"/>
                     </h1>
                   </Link>
                   <p>Обувь и аксессуары для всей семьи</p>

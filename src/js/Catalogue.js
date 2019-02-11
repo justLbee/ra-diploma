@@ -67,8 +67,8 @@ export class Catalogue extends React.Component {
 
     this.pagesArr = [];
 
-    for(let i = 0; i < this.state.pages; i++) {
-      this.pagesArr.push(i+1);
+    for (let i = 0; i < this.state.pages; i++) {
+      this.pagesArr.push(i + 1);
     }
   }
 
@@ -131,7 +131,7 @@ export class Catalogue extends React.Component {
         this.hidePreloader(true);
       });
 
-    if(this.state.pages > 1) {
+    if (this.state.pages > 1) {
       this.nextPage = true;
     }
   }
@@ -158,7 +158,7 @@ export class Catalogue extends React.Component {
       const replacedString = `&${this.filter[filterType].name}=${this.filter[filterType].value}`;
       this.search.searchString = this.search.searchString.replace(replacedString, '');
 
-      switch(filterType){
+      switch (filterType) {
         case 'type':
           this.filter[filterType].filter.classList.remove('chosen');
           break;
@@ -171,7 +171,7 @@ export class Catalogue extends React.Component {
       }
     }
 
-    switch(filterType){
+    switch (filterType) {
       case 'type':
         filter.classList.add('chosen');
         break;
@@ -189,24 +189,21 @@ export class Catalogue extends React.Component {
     this.filter[filterType].name = filterType;
     this.filter[filterType].filter = filter;
 
-    if(filterType === 'size' && this.sizeFilterArr.length > 1) {
+    if (filterType === 'size' && this.sizeFilterArr.length > 1) {
       const sizesString = this.sizeFilterArr.join();
       this.filter[filterType].value = sizesString;
       this.search.searchString += `&${filterType}=${sizesString}`;
-    }
-    else if(filterType === 'size' && this.sizeFilterArr.length === 1) {
+    } else if (filterType === 'size' && this.sizeFilterArr.length === 1) {
       this.search.searchString += `&${filterType}=${this.sizeFilterArr[0]}`;
       this.filter[filterType].value = this.sizeFilterArr[0];
-    }
-    else if(filterType === 'size' && this.sizeFilterArr.length === 0) {
+    } else if (filterType === 'size' && this.sizeFilterArr.length === 0) {
       this.search.searchString += '';
-    }
-    else {
+    } else {
       this.search.searchString += `&${filterType}=${search}`;
       this.filter[filterType].value = search;
     }
 
-    if(filterType === 'discounted' && !search) {
+    if (filterType === 'discounted' && !search) {
       const replacedDiscount = `&discounted=false`;
       this.search.searchString = this.search.searchString.replace(replacedDiscount, '');
     }
@@ -271,7 +268,7 @@ export class Catalogue extends React.Component {
 
   getFilteredSize(event) {
     let sizeNumber = 0;
-    if(event.target.checked) {
+    if (event.target.checked) {
       const selectedSize = event.target.parentNode.querySelector('.label');
       sizeNumber = Number(selectedSize.textContent);
 
@@ -299,11 +296,10 @@ export class Catalogue extends React.Component {
     const currentPageEl = document.querySelector('.active').firstElementChild;
     let currentPageNum = Number(currentPageEl.textContent);
 
-    if(isForward) {
-      currentPageNum < this.pagesArr.length ? currentPageNum++:currentPageNum;
-    }
-    else {
-      currentPageNum > 1 ? currentPageNum--:currentPageNum;
+    if (isForward) {
+      currentPageNum < this.pagesArr.length ? currentPageNum++ : currentPageNum;
+    } else {
+      currentPageNum > 1 ? currentPageNum-- : currentPageNum;
     }
 
     const nextPage = document.getElementById(`${currentPageNum}`).firstElementChild;
@@ -329,7 +325,7 @@ export class Catalogue extends React.Component {
   addToFavorite(event, id) {
     const itemElement = event.target;
 
-    if(itemElement.parentNode.classList.contains('product-catalogue__product_favorite')){
+    if (itemElement.parentNode.classList.contains('product-catalogue__product_favorite')) {
       itemElement.parentNode.classList.remove('product-catalogue__product_favorite');
       itemElement.parentNode.classList.add('product-catalogue__product_favorite-chosen');
 
@@ -355,7 +351,9 @@ export class Catalogue extends React.Component {
       .then(response => response.json())
       .then(product => {
 
-        const sizesStr = product.data.sizes.map(size => {return size.size}).join();
+        const sizesStr = product.data.sizes.map(size => {
+          return size.size
+        }).join();
         const sizeId = product.data.id;
         const sizeObj = {sizeId, sizesStr};
 
@@ -384,9 +382,9 @@ export class Catalogue extends React.Component {
             <li className="site-path__item"><Link
               onClick={e => this.clearFilters(e)}
               to={{
-              pathname: '/catalogue',
-              search: `?categoryId=${this.state.category.id}`
-            }}>{this.state.category.title}</Link></li>
+                pathname: '/catalogue',
+                search: `?categoryId=${this.state.category.id}`
+              }}>{this.state.category.title}</Link></li>
           </ul>
         </div>
 
@@ -400,7 +398,8 @@ export class Catalogue extends React.Component {
                 </div>
                 <ul>
                   <li><a onClick={e => this.choseFilter(e.target, 'type', 'Балетки')}>Балетки</a></li>
-                  <li><a onClick={e => this.choseFilter(e.target, 'type', 'Босоножки и сандалии')}>Босоножки и сандалии</a></li>
+                  <li><a onClick={e => this.choseFilter(e.target, 'type', 'Босоножки и сандалии')}>Босоножки и
+                    сандалии</a></li>
                   <li><a onClick={e => this.choseFilter(e.target, 'type', 'Ботильоны')}>Ботильоны</a></li>
                   <li><a onClick={e => this.choseFilter(e.target, 'type', 'Ботинки')}>Ботинки</a></li>
                   <li><a onClick={e => this.choseFilter(e.target, 'type', 'Ботфорты')}>Ботфорты</a></li>
@@ -416,21 +415,21 @@ export class Catalogue extends React.Component {
               <div className="sidebar__price">
                 <div className="sidebar__division-title">
                   <h3>Цена</h3>
-                  <div className="opener-down" />
+                  <div className="opener-down"/>
                 </div>
                 <div className="price-slider">
                   <div className="circle-container">
-                    <div className="circle-1" />
-                    <div className="line-white" />
-                    <div className="line-colored" />
-                    <div className="circle-2" />
+                    <div className="circle-1"/>
+                    <div className="line-white"/>
+                    <div className="line-colored"/>
+                    <div className="circle-2"/>
                   </div>
                   <div className="counter">
                     <input type="text" className="input-1 min-price"
                            onChange={e => this.getMinPrice(e)}
                            onBlur={e => this.setMinPrice(e)}
                            value={this.state.minPrice}/>
-                    <div className="input-separator" />
+                    <div className="input-separator"/>
                     <input type="text" className="input-2 max-price"
                            onChange={e => this.getMaxPrice(e)}
                            onBlur={e => this.setMaxPrice(e)}
@@ -439,81 +438,91 @@ export class Catalogue extends React.Component {
                 </div>
               </div>
             </section>
-            <div className="separator-150 separator-150-2" />
+            <div className="separator-150 separator-150-2"/>
             <section className="sidebar__division">
               <div className="sidebar__color">
                 <div className="sidebar__division-title">
                   <h3>Цвет</h3>
-                  <div className="opener-down" />
+                  <div className="opener-down"/>
                 </div>
                 <ul>
                   <li><a onClick={e => this.choseFilter(e.target, 'color', 'Бежевый')}>
-                    <div className="color beige" />
+                    <div className="color beige"/>
                     <span className="color-name">Бежевый</span>
                   </a></li>
                   <li><a onClick={e => this.choseFilter(e.target, 'color', 'Белый')}>
-                    <div className="color whitesnake" />
+                    <div className="color whitesnake"/>
                     <span className="color-name">Белый</span></a></li>
                   <li><a onClick={e => this.choseFilter(e.target, 'color', 'Голубой')}>
-                    <div className="color shocking-blue" />
+                    <div className="color shocking-blue"/>
                     <span className="color-name">Голубой</span></a></li>
                   <li><a onClick={e => this.choseFilter(e.target, 'color', 'Жёлтый')}>
-                    <div className="color yellow" />
+                    <div className="color yellow"/>
                     <span className="color-name">Жёлтый</span></a></li>
                   <li><a onClick={e => this.choseFilter(e.target, 'color', 'Алый')}>
-                    <div className="color king-crimson" />
+                    <div className="color king-crimson"/>
                     <span className="color-name">Алый</span></a></li>
                   <li><a onClick={e => this.choseFilter(e.target, 'color', 'Фиолетовый')}>
-                    <div className="color deep-purple" />
+                    <div className="color deep-purple"/>
                     <span className="color-name">Фиолетовый</span></a></li>
                   <li><a onClick={e => this.choseFilter(e.target, 'color', 'Чёрный')}>
-                    <div className="color black-sabbath" />
+                    <div className="color black-sabbath"/>
                     <span className="color-name">Чёрный</span></a></li>
                 </ul>
               </div>
             </section>
-            <div className="separator-150 separator-150-3" />
+            <div className="separator-150 separator-150-3"/>
             <section className="sidebar__division">
               <div className="sidebar__size">
                 <div className="sidebar__division-title">
                   <h3>Размер</h3>
-                  <div className="opener-down" />
+                  <div className="opener-down"/>
                 </div>
                 <ul>
                   <div className="list-1">
                     <li><label>
-                      <input type="checkbox" className="checkbox" name="checkbox-31" onChange={e => this.getFilteredSize(e)} />
-                      <span className="checkbox-custom" /> <span className="label">31</span>
+                      <input type="checkbox" className="checkbox" name="checkbox-31"
+                             onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom"/> <span className="label">31</span>
                     </label></li>
                     <li><label>
-                      <input type="checkbox" className="checkbox" name="checkbox-33" onChange={e => this.getFilteredSize(e)}/>
-                      <span className="checkbox-custom" /> <span className="label">33</span></label></li>
+                      <input type="checkbox" className="checkbox" name="checkbox-33"
+                             onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom"/> <span className="label">33</span></label></li>
                     <li><label>
-                      <input type="checkbox" className="checkbox" name="checkbox-35" onChange={e => this.getFilteredSize(e)}/>
-                      <span className="checkbox-custom" /> <span className="label">35</span></label></li>
+                      <input type="checkbox" className="checkbox" name="checkbox-35"
+                             onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom"/> <span className="label">35</span></label></li>
                     <li><label>
-                      <input type="checkbox" className="checkbox" name="checkbox-37" onChange={e => this.getFilteredSize(e)}/>
-                      <span className="checkbox-custom" /> <span className="label">37</span></label></li>
+                      <input type="checkbox" className="checkbox" name="checkbox-37"
+                             onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom"/> <span className="label">37</span></label></li>
                     <li><label>
-                      <input type="checkbox" className="checkbox" name="checkbox-39" onChange={e => this.getFilteredSize(e)}/>
-                      <span className="checkbox-custom" /> <span className="label">39</span></label></li>
+                      <input type="checkbox" className="checkbox" name="checkbox-39"
+                             onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom"/> <span className="label">39</span></label></li>
                   </div>
                   <div className="list-2">
                     <li><label>
-                      <input type="checkbox" className="checkbox" name="checkbox-32" onChange={e => this.getFilteredSize(e)}/>
-                      <span className="checkbox-custom" /> <span className="label">32</span></label></li>
+                      <input type="checkbox" className="checkbox" name="checkbox-32"
+                             onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom"/> <span className="label">32</span></label></li>
                     <li><label>
-                      <input type="checkbox" className="checkbox" name="checkbox-34" onChange={e => this.getFilteredSize(e)}/>
-                      <span className="checkbox-custom" /> <span className="label">34</span></label></li>
+                      <input type="checkbox" className="checkbox" name="checkbox-34"
+                             onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom"/> <span className="label">34</span></label></li>
                     <li><label>
-                      <input type="checkbox" className="checkbox" name="checkbox-36" onChange={e => this.getFilteredSize(e)}/>
-                      <span className="checkbox-custom" /> <span className="label">36</span></label></li>
+                      <input type="checkbox" className="checkbox" name="checkbox-36"
+                             onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom"/> <span className="label">36</span></label></li>
                     <li><label>
-                      <input type="checkbox" className="checkbox" name="checkbox-38" onChange={e => this.getFilteredSize(e)}/>
-                      <span className="checkbox-custom" /> <span className="label">38</span></label></li>
+                      <input type="checkbox" className="checkbox" name="checkbox-38"
+                             onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom"/> <span className="label">38</span></label></li>
                     <li><label>
-                      <input type="checkbox" className="checkbox" name="checkbox-40" onChange={e => this.getFilteredSize(e)}/>
-                      <span className="checkbox-custom" /> <span className="label">40</span></label></li>
+                      <input type="checkbox" className="checkbox" name="checkbox-40"
+                             onChange={e => this.getFilteredSize(e)}/>
+                      <span className="checkbox-custom"/> <span className="label">40</span></label></li>
                   </div>
                 </ul>
               </div>
@@ -583,10 +592,10 @@ export class Catalogue extends React.Component {
                 type="checkbox"
                 className="checkbox"
                 name="checkbox-disc"/>
-                <span className="checkbox-discount" />
+                <span className="checkbox-discount"/>
                 <span className="text-discount">Со скидкой</span></label>
 
-              <div className="separator-240" />
+              <div className="separator-240"/>
             </section>
 
             <section className="sidebar__division">
@@ -594,8 +603,9 @@ export class Catalogue extends React.Component {
                 <Link
                   onClick={e => this.clearFilters(e)}
                   to={{
-                  pathname: '/catalogue',
-                  search: `?categoryId=${this.state.category.id}`}}><span className="drop-down-icon" />Сбросить</Link>
+                    pathname: '/catalogue',
+                    search: `?categoryId=${this.state.category.id}`
+                  }}><span className="drop-down-icon"/>Сбросить</Link>
               </div>
             </section>
           </section>
@@ -624,11 +634,12 @@ export class Catalogue extends React.Component {
                                                  src={item.images[0]}
                                                  alt={item.title}
                                                  width='100%'/>
-                    <div className="product-catalogue__product_favorite" onClick={event => this.addToFavorite(event, item.id)}>
-                      <p />
+                    <div className="product-catalogue__product_favorite"
+                         onClick={event => this.addToFavorite(event, item.id)}>
+                      <p/>
                     </div>
-                    <div className="arrow arrow_left" />
-                    <div className="arrow arrow_right" />
+                    <div className="arrow arrow_left"/>
+                    <div className="arrow arrow_right"/>
                   </div>
                   <div className="item-desc">
                     <h4 className="item-name">{item.title}</h4>
@@ -639,7 +650,7 @@ export class Catalogue extends React.Component {
                       <p className="sizes__avalible">
                         {
                           this.state.sizes.find(size => size.sizeId === item.id) ?
-                          this.state.sizes.find(size => size.sizeId === item.id).sizesStr:''
+                            this.state.sizes.find(size => size.sizeId === item.id).sizesStr : ''
                         }
                       </p>
                     </div>
@@ -651,25 +662,6 @@ export class Catalogue extends React.Component {
             <Paginator
               pagesArr={this.pagesArr}
             />
-            {/*<div className="product-catalogue__pagination">*/}
-              {/*<div className="page-nav-wrapper">*/}
-                {/*{this.filter.page.value > 1 ?*/}
-                  {/*<div className="angle-back"><a onClick={e => this.changePage(e, false)} /></div>:null}*/}
-                {/*<ul>*/}
-                  {/*{*/}
-                    {/*this.pagesArr.map(page =>*/}
-                      {/*<li*/}
-                        {/*key={page}*/}
-                        {/*id={page}*/}
-                        {/*className={page === 1 ? 'active':''}><a*/}
-                        {/*onClick={e => this.choseFilter(e.target, 'page', `${page}`)}>{page}</a></li>*/}
-                    {/*)*/}
-                  {/*}*/}
-                {/*</ul>*/}
-                {/*{this.filter.page.value < this.pagesArr.length ?*/}
-                  {/*<div className="angle-forward"><a onClick={e => this.changePage(e, true)} /></div>:null}*/}
-              {/*</div>*/}
-            {/*</div>*/}
           </section>
         </main>
 
