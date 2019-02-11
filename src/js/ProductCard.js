@@ -1,39 +1,70 @@
 import React from 'react';
+import throttle from "./helpers/throttle";
+import CategoryGetter from './helpers/categoryGetter'
+
+const categoryGetter = new CategoryGetter();
 
 export class ProductCard extends React.Component {
   constructor(props) {
     super(props);
-    // this.props = props;
+    this.props = props;
     this.state = {
-      preloader: ''
+      preloader: '',
+      category: {}
     };
+
+    this.product = {}
+  }
+
+  componentDidMount() {
+    this.getProductData();
   }
 
   getProductData() {
-    // let search = this.match.params.id;
-    // console.log(search);
-    // const params = {
-    //   method: 'GET',
-    //   headers: new Headers({
-    //     'Content-Type': 'application/json'
-    //   }),
-    // };
-    //
-    // fetch(`https://neto-api.herokuapp.com/bosa-noga/products/${id}`, params)
-    //   .then(response => response.json())
-    //   .then(product => {
-    //     // console.log(product);
-    //     this.product = product.data;
-    //
-    //     console.log(this.product);
-    //     this.favoritesArr.push(this.product)
-    //
-    //     localStorage.setItem('favorites', JSON.stringify(this.favoritesArr));
-    //   })
-    //   .finally(() => {
-    //     this.getCategory();
-    //     this.hidePreloader(true);
-    //   });
+    this.hidePreloader(false);
+
+    const id = this.props.match.params.id;
+    // console.log(this.props.match.params.id);
+
+    const params = {
+      method: 'GET',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+    };
+
+    fetch(`https://neto-api.herokuapp.com/bosa-noga/products/${id}`, params)
+      .then(response => response.json())
+      .then(product => {
+        // console.log(product);
+        this.product = product.data;
+
+        console.log(this.product);
+      })
+      .finally(() => {
+
+        console.log(this.product);
+        this.getCategory();
+        this.hidePreloader(true);
+      });
+  }
+
+  getCategory() {
+    this.setState({
+      category: categoryGetter.getCategoryName(this.product.categoryId)
+    });
+  }
+
+  hidePreloader(isHidden = false) {
+    if (isHidden) {
+      this.setState({
+        preloader: 'hidden'
+      });
+    } else {
+      this.setState({
+        preloader: ''
+      });
+    }
   }
 
   render() {
@@ -51,7 +82,7 @@ export class ProductCard extends React.Component {
         <div className="site-path">
           <ul className="site-path__items">
             <li className="site-path__item"><a href="index.html">Главная</a></li>
-            <li className="site-path__item"><a href="#">Женская обувь</a></li>
+            <li className="site-path__item"><a href="#">{this.state.category ? this.state.category.title:''}</a></li>
             <li className="site-path__item"><a href="#">Ботинки</a></li>
             <li className="site-path__item"><a href="#">Ботинки женские</a></li>
           </ul>

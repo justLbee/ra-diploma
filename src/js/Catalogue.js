@@ -6,8 +6,10 @@ import throttle from './helpers/throttle.js'
 import history from './helpers/history'
 import Favorites from './helpers/favorites'
 import Paginator from './helpers/paginator'
+import CategoryGetter from './helpers/categoryGetter'
 
 const favorite = new Favorites();
+const categoryGetter = new CategoryGetter();
 
 
 export class Catalogue extends React.Component {
@@ -80,15 +82,21 @@ export class Catalogue extends React.Component {
   getCategory() {
     const searchCategory = Number(this.props.location.search.substr(12, 2));
 
-    if (this.props.categories && this.props.categories.length > 0) {
-      const category = this.props.categories.find(el => {
-        return el.id === searchCategory ? el.title : '';
-      });
+    // if (this.props.categories && this.props.categories.length > 0) {
+    //   const category = this.props.categories.find(el => {
+    //     return el.id === searchCategory ? el.title : '';
+    //   });
+    //
+    //   this.setState({
+    //     category: category
+    //   });
+    // }
 
-      this.setState({
-        category: category
-      });
-    }
+    this.setState({
+      category: categoryGetter.getCategoryName(searchCategory)
+    });
+
+    console.log(this.state);
   }
 
   updatePath() {
