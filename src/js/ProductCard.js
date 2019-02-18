@@ -26,10 +26,15 @@ export class ProductCard extends React.Component {
       sku: '',
       title: '',
       type: '',
-      inFavorites: 'В избранное'
+      inFavorites: 'В избранное',
+      size: Number,
+      amount: 1,
+      available: 'В наличии',
+      basketDisabled: 'in-basket_disabled'
     };
 
-    this.product = {}
+    this.product = {};
+    this.chosenSize = null;
   }
 
   componentDidMount() {
@@ -123,7 +128,45 @@ export class ProductCard extends React.Component {
   }
 
   choseSize(event, size) {
-    console.log(size);
+    const element = event.target;
+
+    if(this.chosenSize) {
+      this.chosenSize.classList.remove('chosen');
+    }
+
+    element.classList.add('chosen');
+
+    if(size.available) {
+      this.setState({
+        basketDisabled: null,
+        size: size.size,
+        available: 'В наличии'
+      })
+    } else {
+      this.setState({
+        basketDisabled: 'in-basket_disabled',
+        size: null,
+        available: 'Нет в наличии'
+      })
+    }
+
+    this.chosenSize = element;
+  }
+
+  amountIncrease(event, isIncreased) {
+    let amount = this.state.amount;
+
+    if(isIncreased) {
+      amount++;
+      this.setState({
+        amount: amount
+      })
+    } else {
+      amount--;
+      this.setState({
+        amount: amount
+      })
+    }
   }
 
   render() {
@@ -180,7 +223,7 @@ export class ProductCard extends React.Component {
 
               <div className="main-screen__product-info">
                 <div className="product-info-title"><h2>{this.state.title}</h2>
-                  <div className="in-stock">В наличии</div>
+                  <div className="in-stock">{this.state.available}</div>
                 </div>
                 <div className="product-features">
                   <table className="features-table">
@@ -226,12 +269,12 @@ export class ProductCard extends React.Component {
                   <p className="in-favourites">{this.state.inFavorites}</p>
                 </a>
                 <div className="basket-item__quantity">
-                  <div className="basket-item__quantity-change basket-item-list__quantity-change_minus">-</div>
-                  1
-                  <div className="basket-item__quantity-change basket-item-list__quantity-change_plus">+</div>
+                  <div className="basket-item__quantity-change basket-item-list__quantity-change_minus" onClick={event => this.amountIncrease(event, false)}>-</div>
+                  {this.state.amount}
+                  <div className="basket-item__quantity-change basket-item-list__quantity-change_plus" onClick={event => this.amountIncrease(event, true)}>+</div>
                 </div>
                 <div className="price">{this.state.price}</div>
-                <button className="in-basket in-basket-click">В корзину</button>
+                <button className={`in-basket in-basket-click ${this.state.basketDisabled}`}>В корзину</button>
               </div>
 
             </section>
