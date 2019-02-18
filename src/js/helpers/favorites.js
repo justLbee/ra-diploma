@@ -43,4 +43,16 @@ export default class favorites {
   getFavorites() {
     return JSON.parse(localStorage.getItem('favorites'));
   }
+
+  isFavorite(id) {
+    this.favoritesArr = JSON.parse(localStorage.getItem('favorites'));
+
+    if(this.favoritesArr) {
+      return !!this.favoritesArr.find(fav => {
+        return fav.id === id;
+      });
+    } else {
+      return false
+    }
+  }
 }

@@ -15,7 +15,8 @@ export class Favorite extends React.Component {
 
     this.state = {
       preloader: '',
-      goods: []
+      goods: [],
+      favoriteAmount: Number
     };
 
     this.pagesArr = [1];
@@ -26,7 +27,8 @@ export class Favorite extends React.Component {
 
     this.favoriteGoods = favorite.getFavorites();
     this.setState({
-      goods: this.favoriteGoods
+      goods: this.favoriteGoods,
+      favoriteAmount: this.favoriteGoods.length
     });
 
   }
@@ -50,6 +52,13 @@ export class Favorite extends React.Component {
 
   favoriteClick(event, id) {
     event.preventDefault();
+
+    let favoriteAmount = this.state.favoriteAmount;
+    favoriteAmount--;
+
+    this.setState({
+      favoriteAmount: favoriteAmount
+    });
 
     const itemElement = event.currentTarget.parentNode;
     const goodNode = itemElement.parentNode;
@@ -81,10 +90,10 @@ export class Favorite extends React.Component {
             <main className="product-catalogue product-catalogue_favorite">
               <section className="product-catalogue__head product-catalogue__head_favorite">
                 <div className="product-catalogue__section-title">
-                  <h2 className="section-name">В вашем избранном {this.state.goods.length === 0 ? 'пока ничего нет':null}</h2>
-                  {this.state.goods.length > 0 ? <span className="amount amount_favorite"> {this.state.goods.length} товаров</span> : null}
+                  <h2 className="section-name">В вашем избранном {this.state.favoriteAmount === 0 ? 'пока ничего нет':null}</h2>
+                  {this.state.favoriteAmount > 0 ? <span className="amount amount_favorite"> {this.state.favoriteAmount} товаров</span> : null}
                 </div>
-                {this.state.goods.length > 0 ? <div className="product-catalogue__sort-by">
+                {this.state.favoriteAmount > 0 ? <div className="product-catalogue__sort-by">
                   <p className="sort-by">Сортировать</p>
                   <select id="sorting" name="">
                     <option value="">по дате добавления</option>

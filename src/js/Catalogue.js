@@ -29,6 +29,7 @@ export class Catalogue extends React.Component {
       maxPrice: 3000,
       brand: '',
       sizes: [],
+      inFavorites: []
     };
 
     this.search = {
@@ -58,8 +59,7 @@ export class Catalogue extends React.Component {
 
     this.sizesArr = [];
 
-    this.prevPage = false;
-    this.nextPage = false;
+    this.inFavoritesArr = [];
   }
 
   componentDidUpdate(newProps, newState) {
@@ -77,6 +77,7 @@ export class Catalogue extends React.Component {
   componentDidMount() {
     this.throttledUpdatePath = throttle(this.updatePath, 2000);
     this.getServerData(this.props.location.search);
+    this.getCategory()
   }
 
   getCategory() {
@@ -95,8 +96,6 @@ export class Catalogue extends React.Component {
     this.setState({
       category: categoryGetter.getCategoryName(searchCategory)
     });
-
-    console.log(this.state);
   }
 
   updatePath() {
@@ -107,6 +106,7 @@ export class Catalogue extends React.Component {
 
   getServerData(request) {
     this.hidePreloader(false);
+    this.inFavoritesArr = [];
 
     const params = {
       method: 'GET',
@@ -118,11 +118,17 @@ export class Catalogue extends React.Component {
     fetch(`https://neto-api.herokuapp.com/bosa-noga/products${request}`, params)
       .then(response => response.json())
       .then(products => {
-        console.log(products);
+        // console.log(products);
         this.products = products;
 
         this.products.data.forEach(product => {
           this.sizeGetter(product.id);
+          const inFavoritesObj = {
+            id: product.id,
+            inFavorites: favorite.isFavorite(product.id)
+          };
+
+          this.inFavoritesArr.push(inFavoritesObj);
         });
 
         this.setState({
@@ -137,6 +143,7 @@ export class Catalogue extends React.Component {
       .finally(() => {
         this.getCategory();
         this.hidePreloader(true);
+        // this.inFavorites();
       });
 
     if (this.state.pages > 1) {
@@ -300,20 +307,6 @@ export class Catalogue extends React.Component {
     this.choseFilter(event.target, 'brand', this.state.brand);
   }
 
-  // changePage(event, isForward) {
-  //   const currentPageEl = document.querySelector('.active').firstElementChild;
-  //   let currentPageNum = Number(currentPageEl.textContent);
-  //
-  //   if (isForward) {
-  //     currentPageNum < this.pagesArr.length ? currentPageNum++ : currentPageNum;
-  //   } else {
-  //     currentPageNum > 1 ? currentPageNum-- : currentPageNum;
-  //   }
-  //
-  //   const nextPage = document.getElementById(`${currentPageNum}`).firstElementChild;
-  //   this.choseFilter(nextPage, 'page', currentPageNum);
-  // }
-
   clearFilters() {
     this.search.searchString = '';
   }
@@ -331,6 +324,7 @@ export class Catalogue extends React.Component {
   }
 
   addToFavorite(event, id) {
+    event.preventDefault();
     const itemElement = event.target;
 
     if (itemElement.parentNode.classList.contains('product-catalogue__product_favorite')) {
@@ -344,6 +338,21 @@ export class Catalogue extends React.Component {
 
       favorite.remove(id)
     }
+  }
+
+  inFavorites(id) {
+    // console.log(this.inFavoritesArr);
+
+    const itemOnPage = this.inFavoritesArr.find(element => {
+      return element.id === id;
+    });
+
+    if(itemOnPage && itemOnPage.inFavorites) {
+      return 'product-catalogue__product_favorite-chosen';
+    } else {
+      return 'product-catalogue__product_favorite';
+    }
+
   }
 
   sizeGetter(id) {
@@ -391,8 +400,8 @@ export class Catalogue extends React.Component {
               onClick={e => this.clearFilters(e)}
               to={{
                 pathname: '/catalogue',
-                search: `?categoryId=${this.state.category.id}`
-              }}>{this.state.category.title}</Link></li>
+                search: `?categoryId=${this.state.category ? this.state.category.id : 13}`
+              }}>{this.state.category ? this.state.category.title : ''}</Link></li>
           </ul>
         </div>
 
@@ -612,7 +621,7 @@ export class Catalogue extends React.Component {
                   onClick={e => this.clearFilters(e)}
                   to={{
                     pathname: '/catalogue',
-                    search: `?categoryId=${this.state.category.id}`
+                    search: `?categoryId=${this.state.category ? this.state.category.id : 13}`
                   }}><span className="drop-down-icon"/>Сбросить</Link>
               </div>
             </section>
@@ -622,7 +631,7 @@ export class Catalogue extends React.Component {
 
             <section className="product-catalogue__head">
               <div className="product-catalogue__section-title">
-                <h2 className="section-name">{this.state.category.title ? this.state.category.title : ''}</h2>
+                <h2 className="section-name">{this.state.category ? this.state.category.title : ''}</h2>
                 <span className="amount"> {this.products.goods} товаров</span>
               </div>
               <div className="product-catalogue__sort-by">
@@ -646,7 +655,7 @@ export class Catalogue extends React.Component {
                                                  src={item.images[0]}
                                                  alt={item.title}
                                                  width='100%'/>
-                    <div className="product-catalogue__product_favorite"
+                    <div className={`${this.inFavorites(item.id)}`}
                          onClick={event => this.addToFavorite(event, item.id)}>
                       <p/>
                     </div>

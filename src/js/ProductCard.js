@@ -30,7 +30,8 @@ export class ProductCard extends React.Component {
       size: Number,
       amount: 1,
       available: 'В наличии',
-      basketDisabled: 'in-basket_disabled'
+      basketDisabled: 'in-basket_disabled',
+      isFavorite: false
     };
 
     this.product = {};
@@ -75,12 +76,13 @@ export class ProductCard extends React.Component {
           sku: this.product.sku,
           title: this.product.title,
           type: this.product.type,
+          isFavorite: favorite.isFavorite(this.product.id)
         })
       })
       .finally(() => {
-        // console.log(this.product);
         this.hidePreloader(true);
         this.getCategory();
+        this.isFavorite();
       });
   }
 
@@ -98,6 +100,21 @@ export class ProductCard extends React.Component {
     } else {
       this.setState({
         preloader: ''
+      });
+    }
+  }
+
+  isFavorite() {
+    console.log(this.state);
+    const favoriteWrapper = document.querySelector('.in-favourites-wrapper');
+    const heart = favoriteWrapper.firstElementChild;
+
+    if(this.state.isFavorite) {
+      heart.classList.remove('favourite');
+      heart.classList.add('favourite-fill');
+
+      this.setState({
+        inFavorites: 'В избранном'
       });
     }
   }
