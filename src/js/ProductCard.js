@@ -1,5 +1,6 @@
 import React from 'react';
 import throttle from "./helpers/throttle";
+import {Link} from "react-router-dom";
 import CategoryGetter from './helpers/categoryGetter'
 import Favorites from './helpers/favorites'
 
@@ -27,12 +28,15 @@ export class ProductCard extends React.Component {
       title: '',
       type: '',
       inFavorites: 'В избранное',
-      size: Number,
+      size: undefined,
       amount: 1,
       available: 'В наличии',
       basketDisabled: 'in-basket_disabled',
-      isFavorite: false
+      isFavorite: false,
+      basketText: 'В корзину'
     };
+
+    this.categoryObj = {};
 
     this.product = {};
     this.chosenSize = null;
@@ -58,7 +62,6 @@ export class ProductCard extends React.Component {
     fetch(`https://neto-api.herokuapp.com/bosa-noga/products/${id}`, params)
       .then(response => response.json())
       .then(product => {
-        // console.log(product);
         this.product = product.data;
 
         console.log(this.product);
@@ -87,9 +90,12 @@ export class ProductCard extends React.Component {
   }
 
   getCategory() {
-    this.setState({
-      category: categoryGetter.getCategoryName(this.product.categoryId)
-    });
+    // this.setState({
+    //   category: categoryGetter.getCategoryName(this.product.categoryId)
+    // });
+
+    this.categoryObj = categoryGetter.getCategoryName(this.product.categoryId);
+
   }
 
   hidePreloader(isHidden = false) {
@@ -105,7 +111,6 @@ export class ProductCard extends React.Component {
   }
 
   isFavorite() {
-    console.log(this.state);
     const favoriteWrapper = document.querySelector('.in-favourites-wrapper');
     const heart = favoriteWrapper.firstElementChild;
 
@@ -152,6 +157,9 @@ export class ProductCard extends React.Component {
     }
 
     element.classList.add('chosen');
+    this.setState({
+      basketText: 'В корзину'
+    });
 
     if(size.available) {
       this.setState({
@@ -186,6 +194,14 @@ export class ProductCard extends React.Component {
     }
   }
 
+  addToBasket() {
+    if(!this.state.size) {
+      this.setState({
+        basketText: 'Выберите размер!'
+      })
+    }
+  }
+
   render() {
     return (
       <div>
@@ -200,9 +216,9 @@ export class ProductCard extends React.Component {
 
         <div className="site-path">
           <ul className="site-path__items">
-            <li className="site-path__item"><a href="index.html">Главная</a></li>
+            <li className="site-path__item"><Link to="/">Главная</Link></li>
             <li className="site-path__item"><a href="#">
-              {this.state.category ? this.state.category.title : ''}</a></li>
+              {this.categoryObj ? this.categoryObj.title : ''}</a></li>
             <li className="site-path__item"><a href="#">{this.state.type}</a></li>
             <li className="site-path__item"><a href="#">{this.state.title}</a></li>
           </ul>
@@ -291,7 +307,7 @@ export class ProductCard extends React.Component {
                   <div className="basket-item__quantity-change basket-item-list__quantity-change_plus" onClick={event => this.amountIncrease(event, true)}>+</div>
                 </div>
                 <div className="price">{this.state.price}</div>
-                <button className={`in-basket in-basket-click ${this.state.basketDisabled}`}>В корзину</button>
+                <button className={`in-basket in-basket-click ${this.state.basketDisabled}`} onClick={event => this.addToBasket(event)}>{this.state.basketText}</button>
               </div>
 
             </section>

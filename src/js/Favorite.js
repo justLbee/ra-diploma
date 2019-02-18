@@ -38,7 +38,6 @@ export class Favorite extends React.Component {
   }
 
   hidePreloader(isHidden = false) {
-    console.log(this.state);
     if (isHidden) {
       this.setState({
         preloader: 'hidden'

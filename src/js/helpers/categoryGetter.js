@@ -5,7 +5,7 @@ export default class getCategory {
     this.getCategoryFromServer();
   }
 
-  getCategoryFromServer(id) {
+  getCategoryFromServer() {
     const params = {
       method: 'GET',
       headers: new Headers({
@@ -25,12 +25,19 @@ export default class getCategory {
 
   getCategoryName(id) {
     this.id = id;
+    let category;
     if (this.categories && this.categories.length > 0) {
-      const category = this.categories.find(el => {
-        return el.id === id ? el.title : '';
+        category = this.categories.find(el => {
+        return el.id === id;
       });
+    }
 
+    if(category) {
+      sessionStorage.setItem('category', JSON.stringify(category));
       return category;
+    } else {
+      const oldCategory = JSON.parse(sessionStorage.getItem('category'));
+      return oldCategory;
     }
   }
 }
