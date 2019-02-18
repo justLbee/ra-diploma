@@ -122,6 +122,10 @@ export class ProductCard extends React.Component {
     }
   }
 
+  choseSize(event, size) {
+    console.log(size);
+  }
+
   render() {
     return (
       <div>
@@ -146,7 +150,7 @@ export class ProductCard extends React.Component {
 
         <main className="product-card">
           <section className="product-card-content">
-            <h2 className="section-name">Ботинки женские</h2>
+            <h2 className="section-name">{this.state.title}</h2>
             <section className="product-card-content__main-screen">
 
               {this.state.images.length > 1 ?
@@ -180,6 +184,7 @@ export class ProductCard extends React.Component {
                 </div>
                 <div className="product-features">
                   <table className="features-table">
+                    <tbody>
                     <tr>
                       <td className="left-col">Артикул:</td>
                       <td className="right-col">{this.state.sku}</td>
@@ -205,12 +210,13 @@ export class ProductCard extends React.Component {
                       <td className="left-col">Повод:</td>
                       <td className="right-col">{this.state.reason}</td>
                     </tr>
+                    </tbody>
                   </table>
                 </div>
                 <p className="size">Размер</p>
                 <ul className="sizes">
                   {this.state.sizes.map((size, index) =>
-                    <li key={index}><a href="#">{size.size}</a></li>)}
+                    <li key={index}><a onClick={event => this.choseSize(event, size)}>{size.size}</a></li>)}
                 </ul>
                 <div className="size-wrapper">
                   <a href="#"><span className="size-rule"/><p className="size-table">Таблица размеров</p></a>
@@ -224,7 +230,7 @@ export class ProductCard extends React.Component {
                   1
                   <div className="basket-item__quantity-change basket-item-list__quantity-change_plus">+</div>
                 </div>
-                <div className="price">26 120 ₽</div>
+                <div className="price">{this.state.price}</div>
                 <button className="in-basket in-basket-click">В корзину</button>
               </div>
 
