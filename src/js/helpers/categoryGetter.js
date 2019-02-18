@@ -5,7 +5,7 @@ export default class getCategory {
     this.getCategoryFromServer();
   }
 
-  getCategoryFromServer() {
+  getCategoryFromServer(id) {
     const params = {
       method: 'GET',
       headers: new Headers({
@@ -18,10 +18,13 @@ export default class getCategory {
       .then(categories => {
         this.categories = categories.data;
       })
-      // .finally(() => )
+      .finally(() => {
+        this.getCategoryName(this.id);
+      })
   }
 
   getCategoryName(id) {
+    this.id = id;
     if (this.categories && this.categories.length > 0) {
       const category = this.categories.find(el => {
         return el.id === id ? el.title : '';

@@ -300,19 +300,19 @@ export class Catalogue extends React.Component {
     this.choseFilter(event.target, 'brand', this.state.brand);
   }
 
-  changePage(event, isForward) {
-    const currentPageEl = document.querySelector('.active').firstElementChild;
-    let currentPageNum = Number(currentPageEl.textContent);
-
-    if (isForward) {
-      currentPageNum < this.pagesArr.length ? currentPageNum++ : currentPageNum;
-    } else {
-      currentPageNum > 1 ? currentPageNum-- : currentPageNum;
-    }
-
-    const nextPage = document.getElementById(`${currentPageNum}`).firstElementChild;
-    this.choseFilter(nextPage, 'page', currentPageNum);
-  }
+  // changePage(event, isForward) {
+  //   const currentPageEl = document.querySelector('.active').firstElementChild;
+  //   let currentPageNum = Number(currentPageEl.textContent);
+  //
+  //   if (isForward) {
+  //     currentPageNum < this.pagesArr.length ? currentPageNum++ : currentPageNum;
+  //   } else {
+  //     currentPageNum > 1 ? currentPageNum-- : currentPageNum;
+  //   }
+  //
+  //   const nextPage = document.getElementById(`${currentPageNum}`).firstElementChild;
+  //   this.choseFilter(nextPage, 'page', currentPageNum);
+  // }
 
   clearFilters() {
     this.search.searchString = '';
@@ -637,7 +637,11 @@ export class Catalogue extends React.Component {
             <section className="product-catalogue__item-list">
 
               {this.state.items.map(item =>
-                <a key={item.id} className="item-list__item-card item">
+                <Link
+                  to={`/product/${item.id}`}
+                  key={item.id}
+                  className="item-list__item-card item"
+                >
                   <div className="item-pic"><img className="item-pic-1"
                                                  src={item.images[0]}
                                                  alt={item.title}
@@ -663,7 +667,7 @@ export class Catalogue extends React.Component {
                       </p>
                     </div>
                   </div>
-                </a>
+                </Link>
               )}
             </section>
 

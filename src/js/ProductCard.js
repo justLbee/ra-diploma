@@ -1,8 +1,10 @@
 import React from 'react';
 import throttle from "./helpers/throttle";
 import CategoryGetter from './helpers/categoryGetter'
+import Favorites from './helpers/favorites'
 
 const categoryGetter = new CategoryGetter();
+const favorite = new Favorites();
 
 export class ProductCard extends React.Component {
   constructor(props) {
@@ -10,7 +12,21 @@ export class ProductCard extends React.Component {
     this.props = props;
     this.state = {
       preloader: '',
-      category: {}
+      category: {},
+      brand: '',
+      color: '',
+      id: Number,
+      images: [],
+      material: '',
+      popularity: Number,
+      price: Number,
+      reason: '',
+      season: '',
+      sizes: [],
+      sku: '',
+      title: '',
+      type: '',
+      inFavorites: 'В избранное'
     };
 
     this.product = {}
@@ -40,12 +56,26 @@ export class ProductCard extends React.Component {
         this.product = product.data;
 
         console.log(this.product);
+        this.setState({
+          brand: this.product.brand,
+          color: this.product.color,
+          id: this.product.id,
+          images: this.product.images,
+          material: this.product.material,
+          popularity: this.product.popularity,
+          price: this.product.price,
+          reason: this.product.reason,
+          season: this.product.season,
+          sizes: this.product.sizes,
+          sku: this.product.sku,
+          title: this.product.title,
+          type: this.product.type,
+        })
       })
       .finally(() => {
-
-        console.log(this.product);
-        this.getCategory();
+        // console.log(this.product);
         this.hidePreloader(true);
+        this.getCategory();
       });
   }
 
@@ -67,6 +97,31 @@ export class ProductCard extends React.Component {
     }
   }
 
+  addToFavorite(event, id) {
+    const itemElement = event.target.parentNode;
+    const heart = itemElement.firstElementChild;
+
+    if (heart.classList.contains('favourite')) {
+      heart.classList.remove('favourite');
+      heart.classList.add('favourite-fill');
+
+      this.setState({
+        inFavorites: 'В избранном'
+      });
+
+      favorite.add(id);
+    } else {
+      heart.classList.add('favourite');
+      heart.classList.remove('favourite-fill');
+
+      this.setState({
+        inFavorites: 'В избранное'
+      });
+
+      favorite.remove(id);
+    }
+  }
+
   render() {
     return (
       <div>
@@ -82,9 +137,10 @@ export class ProductCard extends React.Component {
         <div className="site-path">
           <ul className="site-path__items">
             <li className="site-path__item"><a href="index.html">Главная</a></li>
-            <li className="site-path__item"><a href="#">{this.state.category ? this.state.category.title:''}</a></li>
-            <li className="site-path__item"><a href="#">Ботинки</a></li>
-            <li className="site-path__item"><a href="#">Ботинки женские</a></li>
+            <li className="site-path__item"><a href="#">
+              {this.state.category ? this.state.category.title : ''}</a></li>
+            <li className="site-path__item"><a href="#">{this.state.type}</a></li>
+            <li className="site-path__item"><a href="#">{this.state.title}</a></li>
           </ul>
         </div>
 
@@ -93,75 +149,75 @@ export class ProductCard extends React.Component {
             <h2 className="section-name">Ботинки женские</h2>
             <section className="product-card-content__main-screen">
 
-              <section className="main-screen__favourite-product-slider">
-                <div className="favourite-product-slider">
-                  <div className="favourite-product-slider__arrow favourite-product-slider__arrow_up arrow-up"></div>
-                  <div className="favourite-product-slider__item favourite-product-slider__item-1">
-                    <a href="#"></a>
-                  </div>
-                  <div className="favourite-product-slider__item favourite-product-slider__item-2">
-                    <a href="#"></a>
-                  </div>
-                  <div className="favourite-product-slider__item favourite-product-slider__item-3">
-                    <a href="#"></a>
-                  </div>
-                  <div
-                    className="favourite-product-slider__arrow favourite-product-slider__arrow_down arrow-down"></div>
-                </div>
-              </section>
+              {this.state.images.length > 1 ?
+                <section className="main-screen__favourite-product-slider">
+                  <div className="favourite-product-slider">
+                    {this.state.images.length > 3 ?
+                      <div className="favourite-product-slider__arrow favourite-product-slider__arrow_up arrow-up"/> : null}
 
-              <div className="main-screen__favourite-product-pic">
-                <a href="#"><img src="../public/img/product-card-pics/product-card__favourite-product-pic.png"
-                                 alt=""/></a>
-                <a href="#" className="main-screen__favourite-product-pic__zoom"></a>
+                    {this.state.images.map((image, index) =>
+                      <div key={index} className={`favourite-product-slider__item `}
+                      style={{background: `url(${image}) no-repeat`, backgroundSize: 'cover'}}>
+                        <a href="#"/>
+                      </div>
+                    )}
+                    {this.state.images.length > 3 ?
+                      <div className="favourite-product-slider__arrow favourite-product-slider__arrow_down arrow-down"/> : null}
+
+                  </div>
+                </section> : null}
+
+
+              <div className="main-screen__favourite-product-pic"
+                   style={{background: `url(${this.state.images[0]}) no-repeat`, backgroundSize: 'cover'}}
+              >
+                <a href="#" className="main-screen__favourite-product-pic__zoom"/>
               </div>
 
               <div className="main-screen__product-info">
-                <div className="product-info-title"><h2>Ботинки женские</h2>
+                <div className="product-info-title"><h2>{this.state.title}</h2>
                   <div className="in-stock">В наличии</div>
                 </div>
                 <div className="product-features">
-                  {/*<table className="features-table">*/}
-                  {/*<tr>*/}
-                  {/*<td className="left-col">Артикул:</td>*/}
-                  {/*<td className="right-col">BD0677C</td>*/}
-                  {/*</tr>*/}
-                  {/*<tr>*/}
-                  {/*<td className="left-col">Производитель:</td>*/}
-                  {/*<td className="right-col"><a href="#"><span className="producer">Fabi</span></a></td>*/}
-                  {/*</tr>*/}
-                  {/*<tr>*/}
-                  {/*<td className="left-col">Цвет:</td>*/}
-                  {/*<td className="right-col">чёрный</td>*/}
-                  {/*</tr>*/}
-                  {/*<tr>*/}
-                  {/*<td className="left-col">Материалы:</td>*/}
-                  {/*<td className="right-col">натуральная кожа</td>*/}
-                  {/*</tr>*/}
-                  {/*<tr>*/}
-                  {/*<td className="left-col">Сезон:</td>*/}
-                  {/*<td className="right-col">Осень-зима</td>*/}
-                  {/*</tr>*/}
-                  {/*<tr>*/}
-                  {/*<td className="left-col">Повод:</td>*/}
-                  {/*<td className="right-col">Любой</td>*/}
-                  {/*</tr>*/}
-                  {/*</table>*/}
+                  <table className="features-table">
+                    <tr>
+                      <td className="left-col">Артикул:</td>
+                      <td className="right-col">{this.state.sku}</td>
+                    </tr>
+                    <tr>
+                      <td className="left-col">Производитель:</td>
+                      <td className="right-col"><a href="#"><span className="producer">{this.state.brand}</span></a>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="left-col">Цвет:</td>
+                      <td className="right-col">{this.state.color}</td>
+                    </tr>
+                    <tr>
+                      <td className="left-col">Материалы:</td>
+                      <td className="right-col">{this.state.material}</td>
+                    </tr>
+                    <tr>
+                      <td className="left-col">Сезон:</td>
+                      <td className="right-col">{this.state.season}</td>
+                    </tr>
+                    <tr>
+                      <td className="left-col">Повод:</td>
+                      <td className="right-col">{this.state.reason}</td>
+                    </tr>
+                  </table>
                 </div>
                 <p className="size">Размер</p>
                 <ul className="sizes">
-                  <li><a href="#">36</a></li>
-                  <li className="active"><a href="#">37</a></li>
-                  <li><a href="#">38</a></li>
-                  <li><a href="#">38</a></li>
-                  <li><a href="#">39</a></li>
+                  {this.state.sizes.map((size, index) =>
+                    <li key={index}><a href="#">{size.size}</a></li>)}
                 </ul>
                 <div className="size-wrapper">
                   <a href="#"><span className="size-rule"/><p className="size-table">Таблица размеров</p></a>
                 </div>
-                <a href="#" className="in-favourites-wrapper">
-                  <div className="favourite" href="#"></div>
-                  <p className="in-favourites">В избранное</p>
+                <a className="in-favourites-wrapper" onClick={event => this.addToFavorite(event, this.state.id)}>
+                  <div className="favourite"/>
+                  <p className="in-favourites">{this.state.inFavorites}</p>
                 </a>
                 <div className="basket-item__quantity">
                   <div className="basket-item__quantity-change basket-item-list__quantity-change_minus">-</div>
