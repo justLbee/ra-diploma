@@ -16,7 +16,7 @@ export class Favorite extends React.Component {
     this.state = {
       preloader: '',
       goods: [],
-      favoriteAmount: Number
+      favoriteAmount: 0
     };
 
     this.pagesArr = [1];
@@ -26,11 +26,13 @@ export class Favorite extends React.Component {
     this.hidePreloader(false);
 
     this.favoriteGoods = favorite.getFavorites();
-    this.setState({
-      goods: this.favoriteGoods,
-      favoriteAmount: this.favoriteGoods.length
-    });
 
+    if(this.favoriteGoods) {
+      this.setState({
+        goods: this.favoriteGoods,
+        favoriteAmount: this.favoriteGoods.length
+      });
+    }
   }
 
   componentDidMount() {

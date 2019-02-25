@@ -3,9 +3,12 @@ import throttle from "./helpers/throttle";
 import {Link} from "react-router-dom";
 import CategoryGetter from './helpers/categoryGetter'
 import Favorites from './helpers/favorites'
+import RecentlyWatched from './helpers/RecentlyWatched'
+import SessionStorageVisited from "./helpers/sessionVisited"
 
 const categoryGetter = new CategoryGetter();
 const favorite = new Favorites();
+const sessionVisited = new SessionStorageVisited();
 
 export class ProductCard extends React.Component {
   constructor(props) {
@@ -86,6 +89,8 @@ export class ProductCard extends React.Component {
         this.hidePreloader(true);
         this.getCategory();
         this.isFavorite();
+
+        sessionVisited.add(this.product)
       });
   }
 
@@ -309,10 +314,11 @@ export class ProductCard extends React.Component {
                 <div className="price">{this.state.price}</div>
                 <button className={`in-basket in-basket-click ${this.state.basketDisabled}`} onClick={event => this.addToBasket(event)}>{this.state.basketText}</button>
               </div>
-
             </section>
           </section>
         </main>
+
+        <RecentlyWatched />
       </div>
 
     )

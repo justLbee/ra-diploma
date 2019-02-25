@@ -3,6 +3,7 @@ export default class favorites {
     this.favoritesArr = [];
     this.product;
   }
+
   add(id){
     const params = {
       method: 'GET',
@@ -17,8 +18,7 @@ export default class favorites {
         // console.log(product);
         this.product = product.data;
 
-        console.log(this.product);
-        this.favoritesArr.push(this.product)
+        this.favoritesArr.push(this.product);
 
         localStorage.setItem('favorites', JSON.stringify(this.favoritesArr));
       })
