@@ -8,7 +8,13 @@ export default class sessionVisited {
   }
 
   add(product){
-    if(this.visitedArr && this.visitedArr.length < 10 && !this.visitedArr.find(watched => {return watched.id === product.id;})) {
+
+    if(!this.visitedArr) {
+      this.visitedArr = [];
+      
+      this.visitedArr.push(product);
+    }
+    else if(this.visitedArr.length < 10 && !this.visitedArr.find(watched => {return watched.id === product.id;})) {
       this.visitedArr.push(product);
     }
     else if(this.visitedArr && this.visitedArr.length > 10){
