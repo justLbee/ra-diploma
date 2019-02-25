@@ -89,7 +89,7 @@ export class ProductCard extends React.Component {
         this.getCategory();
         this.isFavorite();
 
-        sessionVisited.add(this.product)
+        sessionVisited.add(this.product);
       });
   }
 
