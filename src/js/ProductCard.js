@@ -1,6 +1,7 @@
 import React from 'react';
 import throttle from "./helpers/throttle";
 import {Link} from "react-router-dom";
+
 import CategoryGetter from './helpers/categoryGetter'
 import Favorites from './helpers/favorites'
 import RecentlyWatched from './helpers/RecentlyWatched'
@@ -23,7 +24,7 @@ export class ProductCard extends React.Component {
       images: [],
       material: '',
       popularity: Number,
-      price: Number,
+      price: 0,
       reason: '',
       season: '',
       sizes: [],
@@ -53,7 +54,6 @@ export class ProductCard extends React.Component {
     this.hidePreloader(false);
 
     const id = this.props.match.params.id;
-    // console.log(this.props.match.params.id);
 
     const params = {
       method: 'GET',
@@ -67,7 +67,6 @@ export class ProductCard extends React.Component {
       .then(product => {
         this.product = product.data;
 
-        console.log(this.product);
         this.setState({
           brand: this.product.brand,
           color: this.product.color,
@@ -95,10 +94,6 @@ export class ProductCard extends React.Component {
   }
 
   getCategory() {
-    // this.setState({
-    //   category: categoryGetter.getCategoryName(this.product.categoryId)
-    // });
-
     this.categoryObj = categoryGetter.getCategoryName(this.product.categoryId);
 
   }
@@ -311,7 +306,7 @@ export class ProductCard extends React.Component {
                   {this.state.amount}
                   <div className="basket-item__quantity-change basket-item-list__quantity-change_plus" onClick={event => this.amountIncrease(event, true)}>+</div>
                 </div>
-                <div className="price">{this.state.price}</div>
+                <div className="price">{this.state.price} ₽</div>
                 <button className={`in-basket in-basket-click ${this.state.basketDisabled}`} onClick={event => this.addToBasket(event)}>{this.state.basketText}</button>
               </div>
             </section>
