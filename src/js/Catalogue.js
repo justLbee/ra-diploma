@@ -5,7 +5,7 @@ import throttle from './helpers/throttle.js'
 
 import history from './helpers/history'
 import Favorites from './helpers/favorites'
-import Paginator from './helpers/paginator'
+import Paginator from './ComponentLibrary/paginator'
 import CategoryGetter from './helpers/categoryGetter'
 
 const favorite = new Favorites();

@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 
 import history from './helpers/history'
 import Favorites from './helpers/favorites'
-import Paginator from './helpers/paginator'
+import Paginator from './ComponentLibrary/paginator'
 
 const favorite = new Favorites();
 

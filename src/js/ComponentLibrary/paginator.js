@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import history from './history'
+import history from '../helpers/history'
 
 export default class Paginator extends React.Component {
   constructor(props) {

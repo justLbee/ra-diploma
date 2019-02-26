@@ -8,7 +8,6 @@ export default class sessionVisited {
   }
 
   add(product){
-
     if(!this.visitedArr) {
       this.visitedArr = [];
 
@@ -22,7 +21,6 @@ export default class sessionVisited {
       this.visitedArr.push(product);
     }
 
-    console.log(this.visitedArr);
     sessionStorage.setItem('recentlyWatched', JSON.stringify(this.visitedArr));
   }
 

@@ -4,7 +4,8 @@ import {Link} from "react-router-dom";
 
 import CategoryGetter from './helpers/categoryGetter'
 import Favorites from './helpers/favorites'
-import RecentlyWatched from './helpers/RecentlyWatched'
+import RecentlyWatched from './ComponentLibrary/RecentlyWatched'
+import SimilarProducts from "./ComponentLibrary/SimilarProducts"
 import SessionStorageVisited from "./helpers/sessionVisited"
 
 const categoryGetter = new CategoryGetter();
@@ -50,10 +51,12 @@ export class ProductCard extends React.Component {
     this.getProductData();
   }
 
-  getProductData() {
+  getProductData(id = 0) {
     this.hidePreloader(false);
 
-    const id = this.props.match.params.id;
+    if(id === 0) {
+      id = this.props.match.params.id;
+    }
 
     const params = {
       method: 'GET',
@@ -153,10 +156,10 @@ export class ProductCard extends React.Component {
     const element = event.target;
 
     if(this.chosenSize) {
-      this.chosenSize.classList.remove('chosen');
+      this.chosenSize.parentNode.classList.remove('active');
     }
 
-    element.classList.add('chosen');
+    element.parentNode.classList.add('active');
     this.setState({
       basketText: 'В корзину'
     });
@@ -314,6 +317,7 @@ export class ProductCard extends React.Component {
         </main>
 
         <RecentlyWatched />
+        <SimilarProducts type={this.state.type} color={this.state.color} />
       </div>
 
     )

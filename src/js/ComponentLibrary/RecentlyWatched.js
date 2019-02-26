@@ -1,7 +1,7 @@
 import React from "react";
 
-import SessionStorageVisited from "./sessionVisited"
-import Slide from "./OverLookedSlide"
+import SessionStorageVisited from "../helpers/sessionVisited"
+import OverLookedSlide from "./OverLookedSlide"
 
 const sessionVisited = new SessionStorageVisited();
 
@@ -13,8 +13,8 @@ export default class RecentlyWatched extends React.Component {
 
     this.state = {
       recentlyWatchedState: [],
-      currentIndex: 5,
-      deletedIndex: -1
+      currentIndex: 5, //Отображаем 5, стартуем с пятого
+      deletedIndex: -1 //Стартуем с -1, чтобы не удалялся первый элемент
     };
   }
 
@@ -57,8 +57,8 @@ export default class RecentlyWatched extends React.Component {
 
               {this.recentlyWatchedArr.map((product, index) =>
                 this.state.deletedIndex < index && index < this.state.currentIndex ?
-                  <Slide key={index} product={product} display={'block'}/> :
-                  <Slide key={index} product={product} display={'none'}/>
+                  <OverLookedSlide key={index} product={product} display={'block'}/> :
+                  <OverLookedSlide key={index} product={product} display={'none'}/>
               )}
 
 
