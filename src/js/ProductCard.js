@@ -46,6 +46,7 @@ export class ProductCard extends React.Component {
 
     this.product = {};
     this.chosenSize = null;
+    this.id = this.props.match.params.id;
   }
 
   componentDidMount() {
@@ -56,7 +57,7 @@ export class ProductCard extends React.Component {
     this.hidePreloader(false);
 
     if (id === 0) {
-      id = this.props.match.params.id;
+      id = this.id;
     }
 
     const params = {
@@ -346,7 +347,7 @@ export class ProductCard extends React.Component {
         </main>
 
         <RecentlyWatched/>
-        <SimilarProducts type={this.state.type} color={this.state.color}/>
+        <SimilarProducts type={this.state.type} color={this.state.color} similarProductId={this.id}/>
       </div>
 
     )

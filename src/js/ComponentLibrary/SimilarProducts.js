@@ -9,9 +9,12 @@ export default class RecentlyWatched extends React.Component {
     this.productsArr = [];
     this.state = {
       productArr: [],
-      currentIndex: 3, //Отображаем 3, стартуем с третьего
-      deletedIndex: -1 //Стартуем с -1, чтобы не удалялся первый элемент
+      currentIndex: 3,        //Отображаем 3, стартуем с третьего
+      deletedIndex: -1,       //Стартуем с -1, чтобы не удалялся первый элемент
+      similarProductId: 0
     };
+
+    console.log(this.props);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -33,12 +36,9 @@ export default class RecentlyWatched extends React.Component {
       .then(product => {
         this.productsArr = product.data;
         this.setState({
-          productArr: this.productsArr
-        })
+          productArr: this.productsArr,
+        });
       })
-      .finally(() => {
-
-      });
   }
 
   prevProduct() {
@@ -64,6 +64,7 @@ export default class RecentlyWatched extends React.Component {
   }
 
   render() {
+
     return (
       <div>
         {this.state.productArr && this.state.productArr.length > 0 ?
@@ -76,8 +77,8 @@ export default class RecentlyWatched extends React.Component {
 
               {this.state.productArr.map((product, index) =>
                 this.state.deletedIndex < index && index < this.state.currentIndex ?
-                  <SimilarSlide key={index} product={product} display={'block'}/> :
-                  <SimilarSlide key={index} product={product} display={'none'}/>)}
+                  <SimilarSlide key={index} product={product} display={'block'} prodId={this.props.similarProductId}/> :
+                  <SimilarSlide key={index} product={product} display={'none'} prodId={this.props.similarProductId}/>)}
 
               {this.state.productArr.length > 3 ?
                 <div className="similar-products-slider__arrow similar-products-slider__arrow_right arrow"

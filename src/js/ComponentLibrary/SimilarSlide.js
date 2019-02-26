@@ -2,9 +2,10 @@ import React from 'react'
 import {Link} from "react-router-dom";
 import {ProductCard} from "../ProductCard";
 
-const SimilarSlide = ({product, display}) => {
+const SimilarSlide = ({product, display, prodId}) => {
+  console.log(product.id !== Number(prodId));
   return (
-    Object.entries(product).length !== 0 && product.constructor === Object ?
+    Object.entries(product).length !== 0 && product.constructor === Object && product.id !== Number(prodId) ?
         <div className="similar-products-slider__item-list__item-card item"
           style={{display: display}}>
           <div className="similar-products-slider__item">
