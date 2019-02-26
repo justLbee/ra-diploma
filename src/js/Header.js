@@ -8,6 +8,9 @@ export default class Header extends React.Component {
 
     this.state = {
       droppedMenu: false,
+      basketProductsAmount: 0,
+      basketActiveDisplay: 'none',
+      blinkCounter: 0
     };
 
     this.category = '';
@@ -18,26 +21,32 @@ export default class Header extends React.Component {
     this.profilePanel = null;
   }
 
+  componentWillReceiveProps(nextProps, nextContext) {
+    this.setState({
+      basketProductsAmount: nextProps.basketProductsAmount,
+      basketActiveDisplay: nextProps.basketActiveDisplay
+    });
+
+    this.blinkBasket();
+  }
+
   componentDidMount() {
     this.headerPanel = document.querySelector('.header-main__hidden-panel');
     this.profilePanel = document.querySelector('.hidden-panel__profile');
   }
 
   mainMenuClicked(event) {
-    if(event.target.parentNode.classList.contains('wrapper') || event.target.parentNode.classList.contains('main-menu__items')){
+    if (event.target.parentNode.classList.contains('wrapper') || event.target.parentNode.classList.contains('main-menu__items')) {
       return;
     }
 
-    if(!this.category) {
+    if (!this.category) {
       this.showDropMenu(true, event.target.parentNode);
-    }
-    else if(this.category !== event.target.parentNode) {
+    } else if (this.category !== event.target.parentNode) {
       this.showDropMenu(true, event.target.parentNode);
-    }
-    else if(this.category === event.target.parentNode && !this.state.droppedMenu){
+    } else if (this.category === event.target.parentNode && !this.state.droppedMenu) {
       this.showDropMenu(true, event.target.parentNode);
-    }
-    else {
+    } else {
       this.showDropMenu(false, event.target.parentNode);
     }
 
@@ -45,7 +54,7 @@ export default class Header extends React.Component {
   }
 
   showDropMenu(isOpen, element) {
-    if(this.category) {
+    if (this.category) {
       this.category.classList.remove('main-menu__item_active');
     }
 
@@ -53,7 +62,7 @@ export default class Header extends React.Component {
       droppedMenu: isOpen
     });
 
-    if(isOpen) {
+    if (isOpen) {
       element.classList.add('main-menu__item_active');
       document.querySelector('.dropped-menu').classList.add('dropped-menu_visible');
     } else {
@@ -63,7 +72,7 @@ export default class Header extends React.Component {
   }
 
   changeLink(event) {
-    switch(event.target.textContent) {
+    switch (event.target.textContent) {
       case 'Мужская обувь':
         this.categoryId = 12;
         break;
@@ -86,26 +95,35 @@ export default class Header extends React.Component {
   }
 
   headerPanelClick(event) {
-    if(this.headerPanel.classList.contains('header-main__hidden-panel_visible')){
+    if (this.headerPanel.classList.contains('header-main__hidden-panel_visible')) {
       this.showHeaderPanelMenu(false, event.target);
-    }
-    else {
+    } else {
       this.showHeaderPanelMenu(true, event.target);
     }
   }
 
   showHeaderPanelMenu(isOpen, element) {
-    if(isOpen) {
+    if (isOpen) {
       this.headerPanel.classList.add('header-main__hidden-panel_visible');
-    }
-    else {
+    } else {
       this.headerPanel.classList.remove('header-main__hidden-panel_visible');
       return;
     }
 
-    if(element.classList.contains('header-main__pic_profile')) {
+    if (element.classList.contains('header-main__pic_profile')) {
       this.profilePanel.classList.add('hidden-panel__profile_visible');
     }
+  }
+
+  //toDo Возможно нужен генератор
+  blinkBasket() {
+
+    // for(let i = 0; i < 8; i++) {
+    //   console.log(i);
+    //   this.setState({
+    //     blinkCounter: i
+    //   })
+    // }
   }
 
   render() {
@@ -154,19 +172,22 @@ export default class Header extends React.Component {
                     <div className="header-main__pic header-main__pic_search">
 
                     </div>
-                    <div className="header-main__pic_border" />
-                    <div className="header-main__pic header-main__pic_profile" onClick={event => this.headerPanelClick(event)}>
-                      <div className="header-main__pic_profile_menu" />
+                    <div className="header-main__pic_border"/>
+                    <div className="header-main__pic header-main__pic_profile"
+                         onClick={event => this.headerPanelClick(event)}>
+                      <div className="header-main__pic_profile_menu"/>
                     </div>
-                    <div className="header-main__pic_border" />
+                    <div className="header-main__pic_border"/>
                     <div className="header-main__pic header-main__pic_basket">
-                      <div className="header-main__pic_basket_full" style={{display: 'block'}}>1</div>
-                      <div className="header-main__pic_basket_menu" />
+                      {this.state.blinkCounter%2 === 0 ? null : <div className="header-main__pic_basket_full"
+                                                                       style={{display: `${this.state.basketActiveDisplay}`}}>{this.state.basketProductsAmount}</div>}
+
+                      <div className="header-main__pic_basket_menu"/>
                     </div>
                   </div>
                   <form className="header-main__search" action="#">
                     <input placeholder="Поиск"/>
-                    <i className="fa fa-search" aria-hidden="true" />
+                    <i className="fa fa-search" aria-hidden="true"/>
                   </form>
                 </div>
 
@@ -176,7 +197,7 @@ export default class Header extends React.Component {
                   <div className="hidden-panel__profile">
                     <a href="#">Личный кабинет</a>
                     <Link onClick={e => this.showHeaderPanelMenu(false)} to='/favorite'>
-                      <i className="fa fa-heart-o" aria-hidden="true" />Избранное</Link>
+                      <i className="fa fa-heart-o" aria-hidden="true"/>Избранное</Link>
                     <a href="#">Выйти</a>
                   </div>
                   <div className="hidden-panel__basket basket-dropped">
@@ -223,12 +244,12 @@ export default class Header extends React.Component {
                         <a className="product-list__pic">
                           <img src="img/product-list__pic_1.jpg" alt="product"/> </a>
                         <a href="#" className="product-list__product">Ботинки женские, Baldinini</a>
-                        <div className="product-list__fill" />
+                        <div className="product-list__fill"/>
                         <div className="product-list__price">12 360
-                          <i className="fa fa-rub" aria-hidden="true" />
+                          <i className="fa fa-rub" aria-hidden="true"/>
                         </div>
                         <div className="product-list__delete">
-                          <i className="fa fa-times" aria-hidden="true" />
+                          <i className="fa fa-times" aria-hidden="true"/>
                         </div>
                       </div>
 
@@ -276,25 +297,34 @@ export default class Header extends React.Component {
                   <h3 className="dropped-menu__list-title">Повод:</h3>
                   <ul className="dropped-menu__list">
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&reason=Офис`}} >Офис</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&reason=Офис`}}>Офис</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&reason=Вечеринка`}}>Вечеринка</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&reason=Вечеринка`}}>Вечеринка</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&reason=Свадьба`}}>Свадьба</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&reason=Свадьба`}}>Свадьба</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&reason=Спорт`}}>Спорт</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&reason=Спорт`}}>Спорт</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&reason=Море`}}>Море</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&reason=Море`}}>Море</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&reason=Дом`}}>Дом</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&reason=Дом`}}>Дом</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&reason=Повседневное`}}>Повседневное</Link>
+                      <Link onClick={() => this.linkClick()} to={{
+                        pathname: '/catalogue',
+                        search: `${this.pathName}&reason=Повседневное`
+                      }}>Повседневное</Link>
                     </li>
                   </ul>
                 </div>
@@ -302,52 +332,71 @@ export default class Header extends React.Component {
                   <h3 className="dropped-menu__list-title">Категории:</h3>
                   <ul className="dropped-menu__list">
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Балетки`}}>Балетки</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&type=Балетки`}}>Балетки</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Босоножки`}}>Босоножки</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&type=Босоножки`}}>Босоножки</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Ботильоны`}}>Ботильоны</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&type=Ботильоны`}}>Ботильоны</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Ботинки`}}>Ботинки</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&type=Ботинки`}}>Ботинки</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Ботфорты`}}>Ботфорты</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&type=Ботфорты`}}>Ботфорты</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Галоши`}}>Галоши</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&type=Галоши`}}>Галоши</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Кеды и кроссовки`}}>Кеды и кроссовки</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&type=Кеды и кроссовки`}}>Кеды и
+                        кроссовки</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Мокасины`}}>Мокасины</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&type=Мокасины`}}>Мокасины</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Полусапоги`}}>Полусапоги</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&type=Полусапоги`}}>Полусапоги</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Резиновые сапоги`}}>Резиновые сапоги</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&type=Резиновые сапоги`}}>Резиновые
+                        сапоги</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Сабо`}}>Сабо</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&type=Сабо`}}>Сабо</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Сапоги`}}>Сапоги</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&type=Сапоги`}}>Сапоги</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Сникерсы`}}>Сникерсы</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&type=Сникерсы`}}>Сникерсы</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Тапочки`}}>Тапочки</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&type=Тапочки`}}>Тапочки</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Туфли`}}>Туфли</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&type=Туфли`}}>Туфли</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&type=Шлёпанцы и вьетнамки`}}>Шлёпанцы и вьетнамки</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&type=Шлёпанцы и вьетнамки`}}>Шлёпанцы
+                        и вьетнамки</Link>
                     </li>
                   </ul>
                 </div>
@@ -355,16 +404,20 @@ export default class Header extends React.Component {
                   <h3 className="dropped-menu__list-title">Сезон:</h3>
                   <ul className="dropped-menu__list">
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&season=Зима`}}>Зима</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&season=Зима`}}>Зима</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&season=Весна`}}>Весна</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&season=Весна`}}>Весна</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&season=Лето`}}>Лето</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&season=Лето`}}>Лето</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&season=Осень`}}>Осень</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&season=Осень`}}>Осень</Link>
                     </li>
                   </ul>
                 </div>
@@ -372,25 +425,32 @@ export default class Header extends React.Component {
                   <h3 className="dropped-menu__list-title">Бренды:</h3>
                   <ul className="dropped-menu__list">
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&brand=Albano`}}>Albano</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&brand=Albano`}}>Albano</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&brand=Ballin`}}>Ballin</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&brand=Ballin`}}>Ballin</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&brand=Baldinini`}}>Baldinini</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&brand=Baldinini`}}>Baldinini</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&brand=Damlax`}}>Damlax</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&brand=Damlax`}}>Damlax</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&brand=Pegia`}}>Pegia</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&brand=Pegia`}}>Pegia</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&brand=Renzi`}}>Renzi</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&brand=Renzi`}}>Renzi</Link>
                     </li>
                     <li className="dropped-menu__item">
-                      <Link onClick={() => this.linkClick()} to={{pathname: '/catalogue', search: `${this.pathName}&brand`}}>Все</Link>
+                      <Link onClick={() => this.linkClick()}
+                            to={{pathname: '/catalogue', search: `${this.pathName}&brand`}}>Все</Link>
                     </li>
                   </ul>
                 </div>

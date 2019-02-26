@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import Header from './js/Header';
 import Main from './js/Main'
 import Footer from './js/Footer'
@@ -37,11 +37,46 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Header />
-        <Main/>
+        <HeaderMenuWrapper />
         <Footer/>
       </div>
     );
+  }
+}
+
+class HeaderMenuWrapper extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      basketProductsAmount: 0,
+      basketActiveDisplay: 'none'
+    }
+  }
+
+  toggleBasket = (increase) => {
+    console.log(increase);
+    let basketCounter = this.state.basketProductsAmount;
+
+    if (increase) {
+      basketCounter++;
+    } else {
+      basketCounter--;
+    }
+
+    this.setState({
+      basketProductsAmount: basketCounter,
+      basketActiveDisplay: 'block'
+    });
+  };
+
+  render() {
+    return(
+      <div>
+        <Header basketProductsAmount={this.state.basketProductsAmount} basketActiveDisplay={this.state.basketActiveDisplay}/>
+        <Main onClick={this.toggleBasket}/>
+      </div>
+    )
   }
 }
 

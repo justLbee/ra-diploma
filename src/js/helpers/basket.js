@@ -42,9 +42,9 @@ export default class basket {
         .then(basket => {
           // console.log(product);
           this.basketId = basket.data.id;
-          this.productsInBasket = basket.products;
+          this.productsInBasket = basket.data.products;
 
-          console.log(this.basketAdded);
+          console.log(this.productsInBasket);
 
           localStorage.setItem('basketId', JSON.stringify(this.basketId));
         })
@@ -109,7 +109,7 @@ export default class basket {
         console.log(this.productsInBasket);
       })
   }
-  
+
   // remove(id) {
   //   this.favoritesArr = JSON.parse(localStorage.getItem('favorites'));
   //

@@ -8,11 +8,13 @@ import RecentlyWatched from './ComponentLibrary/RecentlyWatched'
 import SimilarProducts from "./ComponentLibrary/SimilarProducts"
 import SessionStorageVisited from "./helpers/sessionVisited"
 import Basket from "./helpers/basket"
+import Header from "./Header"
 
 const categoryGetter = new CategoryGetter();
 const favorite = new Favorites();
 const sessionVisited = new SessionStorageVisited();
 const basket = new Basket();
+const header = new Header();
 
 export class ProductCard extends React.Component {
   constructor(props) {
@@ -213,8 +215,10 @@ export class ProductCard extends React.Component {
       })
     }
 
-    console.log(id, size, amount);
-    basket.addToBasket(id, size, amount);
+    console.log(this.props);
+    this.props.onClick(true);
+    // basket.addToBasket(id, size, amount);
+    // header.basketInfoUpdate(true);
   }
 
   render() {

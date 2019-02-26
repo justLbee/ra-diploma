@@ -53,11 +53,11 @@ export default class Main extends React.Component {
   };
 
   WithProduct = (props) => {
-    const {categories} = this.state.categories;
+    // const {categories} = this.state.categories;
     return (
       <ProductCard
         {...props}
-        categories={categories}
+        onClick={this.props.onClick}
       />
     );
   };
@@ -74,7 +74,7 @@ export default class Main extends React.Component {
           <Route path='/news' component={News}/>
           <Route path='/catalogue' component={Catalogue}/>
           <Route path='/favorite' component={Favorite}/>
-          <Route path='/product/:id' component={ProductCard}/>
+          <Route path='/product/:id' component={this.WithProduct}/>
         </Switch>
       </main>
     )
