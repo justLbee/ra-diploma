@@ -38,7 +38,8 @@ export class ProductCard extends React.Component {
       available: 'В наличии',
       basketDisabled: 'in-basket_disabled',
       isFavorite: false,
-      basketText: 'В корзину'
+      basketText: 'В корзину',
+      categoryObj: {}
     };
 
     this.categoryObj = {};
@@ -54,7 +55,7 @@ export class ProductCard extends React.Component {
   getProductData(id = 0) {
     this.hidePreloader(false);
 
-    if(id === 0) {
+    if (id === 0) {
       id = this.props.match.params.id;
     }
 
@@ -99,6 +100,11 @@ export class ProductCard extends React.Component {
   getCategory() {
     this.categoryObj = categoryGetter.getCategoryName(this.product.categoryId);
 
+    setTimeout(() =>
+      this.setState({
+        categoryObj: this.categoryObj
+      })
+    )
   }
 
   hidePreloader(isHidden = false) {
@@ -117,7 +123,7 @@ export class ProductCard extends React.Component {
     const favoriteWrapper = document.querySelector('.in-favourites-wrapper');
     const heart = favoriteWrapper.firstElementChild;
 
-    if(this.state.isFavorite) {
+    if (this.state.isFavorite) {
       heart.classList.remove('favourite');
       heart.classList.add('favourite-fill');
 
@@ -155,7 +161,7 @@ export class ProductCard extends React.Component {
   choseSize(event, size) {
     const element = event.target;
 
-    if(this.chosenSize) {
+    if (this.chosenSize) {
       this.chosenSize.parentNode.classList.remove('active');
     }
 
@@ -164,7 +170,7 @@ export class ProductCard extends React.Component {
       basketText: 'В корзину'
     });
 
-    if(size.available) {
+    if (size.available) {
       this.setState({
         basketDisabled: null,
         size: size.size,
@@ -184,7 +190,7 @@ export class ProductCard extends React.Component {
   amountIncrease(event, isIncreased) {
     let amount = this.state.amount;
 
-    if(isIncreased) {
+    if (isIncreased) {
       amount++;
       this.setState({
         amount: amount
@@ -198,7 +204,7 @@ export class ProductCard extends React.Component {
   }
 
   addToBasket() {
-    if(!this.state.size) {
+    if (!this.state.size) {
       this.setState({
         basketText: 'Выберите размер!'
       })
@@ -219,10 +225,26 @@ export class ProductCard extends React.Component {
 
         <div className="site-path">
           <ul className="site-path__items">
-            <li className="site-path__item"><Link to="/">Главная</Link></li>
-            <li className="site-path__item"><a href="#">
-              {this.categoryObj ? this.categoryObj.title : ''}</a></li>
-            <li className="site-path__item"><a href="#">{this.state.type}</a></li>
+            <li className="site-path__item">
+              <Link to="/">Главная
+              </Link>
+            </li>
+            <li className="site-path__item">
+              <Link to={{
+                pathname: '/catalogue',
+                search: `?categoryId=${this.state.categoryObj ? this.state.categoryObj.id : 13}`
+              }}>
+                {this.state.categoryObj.title ? this.state.categoryObj.title : ''}
+              </Link>
+            </li>
+            <li className="site-path__item">
+              <Link to={{
+                pathname: '/catalogue',
+                search: `?categoryId=${this.state.categoryObj.id}&type=${this.state.type}`
+              }}>
+                {this.state.type}
+              </Link>
+            </li>
             <li className="site-path__item"><a href="#">{this.state.title}</a></li>
           </ul>
         </div>
@@ -236,16 +258,18 @@ export class ProductCard extends React.Component {
                 <section className="main-screen__favourite-product-slider">
                   <div className="favourite-product-slider">
                     {this.state.images.length > 3 ?
-                      <div className="favourite-product-slider__arrow favourite-product-slider__arrow_up arrow-up"/> : null}
+                      <div
+                        className="favourite-product-slider__arrow favourite-product-slider__arrow_up arrow-up"/> : null}
 
                     {this.state.images.map((image, index) =>
                       <div key={index} className={`favourite-product-slider__item `}
-                      style={{background: `url(${image}) no-repeat`, backgroundSize: 'cover'}}>
+                           style={{background: `url(${image}) no-repeat`, backgroundSize: 'cover'}}>
                         <a href="#"/>
                       </div>
                     )}
                     {this.state.images.length > 3 ?
-                      <div className="favourite-product-slider__arrow favourite-product-slider__arrow_down arrow-down"/> : null}
+                      <div
+                        className="favourite-product-slider__arrow favourite-product-slider__arrow_down arrow-down"/> : null}
 
                   </div>
                 </section> : null}
@@ -305,19 +329,24 @@ export class ProductCard extends React.Component {
                   <p className="in-favourites">{this.state.inFavorites}</p>
                 </a>
                 <div className="basket-item__quantity">
-                  <div className="basket-item__quantity-change basket-item-list__quantity-change_minus" onClick={event => this.amountIncrease(event, false)}>-</div>
+                  <div className="basket-item__quantity-change basket-item-list__quantity-change_minus"
+                       onClick={event => this.amountIncrease(event, false)}>-
+                  </div>
                   {this.state.amount}
-                  <div className="basket-item__quantity-change basket-item-list__quantity-change_plus" onClick={event => this.amountIncrease(event, true)}>+</div>
+                  <div className="basket-item__quantity-change basket-item-list__quantity-change_plus"
+                       onClick={event => this.amountIncrease(event, true)}>+
+                  </div>
                 </div>
                 <div className="price">{this.state.price} ₽</div>
-                <button className={`in-basket in-basket-click ${this.state.basketDisabled}`} onClick={event => this.addToBasket(event)}>{this.state.basketText}</button>
+                <button className={`in-basket in-basket-click ${this.state.basketDisabled}`}
+                        onClick={event => this.addToBasket(event)}>{this.state.basketText}</button>
               </div>
             </section>
           </section>
         </main>
 
-        <RecentlyWatched />
-        <SimilarProducts type={this.state.type} color={this.state.color} />
+        <RecentlyWatched/>
+        <SimilarProducts type={this.state.type} color={this.state.color}/>
       </div>
 
     )
