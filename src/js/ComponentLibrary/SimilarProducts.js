@@ -13,8 +13,6 @@ export default class RecentlyWatched extends React.Component {
       deletedIndex: -1,       //Стартуем с -1, чтобы не удалялся первый элемент
       similarProductId: 0
     };
-
-    console.log(this.props);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {

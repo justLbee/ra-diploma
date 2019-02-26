@@ -160,7 +160,7 @@ export default class Header extends React.Component {
                     </div>
                     <div className="header-main__pic_border" />
                     <div className="header-main__pic header-main__pic_basket">
-                      <div className="header-main__pic_basket_full">1</div>
+                      <div className="header-main__pic_basket_full" style={{display: 'block'}}>1</div>
                       <div className="header-main__pic_basket_menu" />
                     </div>
                   </div>

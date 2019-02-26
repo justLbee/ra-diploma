@@ -7,10 +7,12 @@ import Favorites from './helpers/favorites'
 import RecentlyWatched from './ComponentLibrary/RecentlyWatched'
 import SimilarProducts from "./ComponentLibrary/SimilarProducts"
 import SessionStorageVisited from "./helpers/sessionVisited"
+import Basket from "./helpers/basket"
 
 const categoryGetter = new CategoryGetter();
 const favorite = new Favorites();
 const sessionVisited = new SessionStorageVisited();
+const basket = new Basket();
 
 export class ProductCard extends React.Component {
   constructor(props) {
@@ -204,12 +206,15 @@ export class ProductCard extends React.Component {
     }
   }
 
-  addToBasket() {
+  addToBasket(event, id, size, amount) {
     if (!this.state.size) {
       this.setState({
         basketText: 'Выберите размер!'
       })
     }
+
+    console.log(id, size, amount);
+    basket.addToBasket(id, size, amount);
   }
 
   render() {
@@ -340,7 +345,7 @@ export class ProductCard extends React.Component {
                 </div>
                 <div className="price">{this.state.price} ₽</div>
                 <button className={`in-basket in-basket-click ${this.state.basketDisabled}`}
-                        onClick={event => this.addToBasket(event)}>{this.state.basketText}</button>
+                        onClick={event => this.addToBasket(event, this.state.id, this.state.size, this.state.amount)}>{this.state.basketText}</button>
               </div>
             </section>
           </section>
