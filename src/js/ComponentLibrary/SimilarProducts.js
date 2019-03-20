@@ -62,10 +62,9 @@ export default class RecentlyWatched extends React.Component {
   }
 
   render() {
-
     return (
       <div>
-        {this.state.productArr && this.state.productArr.length > 0 ?
+        {this.state.productArr && this.state.productArr.length > 1 ?
           <section className="product-card__similar-products-slider">
             <h3>Похожие товары:</h3>
             <div className="similar-products-slider">
