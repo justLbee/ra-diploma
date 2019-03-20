@@ -179,9 +179,7 @@ export default class Header extends React.Component {
                     </div>
                     <div className="header-main__pic_border"/>
                     <div className="header-main__pic header-main__pic_basket">
-                      {this.state.blinkCounter%2 === 0 ? null : <div className="header-main__pic_basket_full"
-                                                                       style={{display: `${this.state.basketActiveDisplay}`}}>{this.state.basketProductsAmount}</div>}
-
+                      <div className="header-main__pic_basket_full blink_basket" style={{display: `${this.state.basketActiveDisplay}`}}>{this.state.basketProductsAmount}</div>
                       <div className="header-main__pic_basket_menu"/>
                     </div>
                   </div>
