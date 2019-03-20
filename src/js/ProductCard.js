@@ -14,7 +14,7 @@ const categoryGetter = new CategoryGetter();
 const favorite = new Favorites();
 const sessionVisited = new SessionStorageVisited();
 const basket = new Basket();
-const header = new Header();
+// const header = new Header();
 
 export class ProductCard extends React.Component {
   constructor(props) {
@@ -217,8 +217,7 @@ export class ProductCard extends React.Component {
 
     console.log(this.props);
     this.props.onClick(true);
-    // basket.addToBasket(id, size, amount);
-    // header.basketInfoUpdate(true);
+    basket.addToBasket(id, size, amount);
   }
 
   render() {

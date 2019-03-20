@@ -4,13 +4,16 @@ export default class basket {
     // this.product;
     this.basketAdded = '';
     this.productsInBasket = [];
+    this.productsInBasketParsed = [];
+
+    this.productInfo = {};
   }
 
   checkStorage() {
     return JSON.parse(localStorage.getItem('basketId'));
   }
 
-  addToBasket(id, size, amount){
+  addToBasket(id, size, amount, title, image, brand){
     const productToCart = {
       id: id,
       size: size,
@@ -32,9 +35,10 @@ export default class basket {
         .then(basket => {
           // console.log(product);
           this.basketId = basket.data.id;
-          console.log(this.basketId);
 
           localStorage.setItem('basketId', JSON.stringify(this.basketId));
+
+          // this.getProductsInBasketFromServer();
         })
     } else {
       fetch(`https://neto-api.herokuapp.com/bosa-noga/cart/${this.basketId}`, params)
@@ -47,6 +51,8 @@ export default class basket {
           console.log(this.productsInBasket);
 
           localStorage.setItem('basketId', JSON.stringify(this.basketId));
+          localStorage.setItem('productsInBasket', JSON.stringify(this.productsInBasket));
+          this.getProductsFromLocalStorage();
         })
     }
     // fetch(`https://neto-api.herokuapp.com/bosa-noga/products/${id}`, params)
@@ -61,7 +67,7 @@ export default class basket {
     //   })
   }
 
-  getProductsInBasket() {
+  getProductsInBasketFromServer() {
     this.basketId = this.checkStorage();
 
     const params = {
@@ -77,10 +83,38 @@ export default class basket {
         // console.log(product);
         this.basketId = basket.data.id;
         this.productsInBasket = basket.products;
-
-        console.log(this.basketAdded);
-
       })
+  }
+
+  //toDo надо придумать, как получить информацию о товарах, которые в корзине
+  getProductsFromLocalStorage() {
+    const products = JSON.parse(localStorage.getItem('productsInBasket'));
+    const params = {
+      method: 'GET',
+      headers: new Headers({
+        'Content-Type': 'application/json'
+      }),
+    };
+
+    products.forEach(product => {
+      fetch(`https://neto-api.herokuapp.com/bosa-noga/products/${product.id}`, params)
+        .then(response => response.json())
+        .then(element => {
+          this.productInfo = {
+            title: element.data.title,
+          };
+        })
+        .finally(() => {
+          this.productsInBasketParsed.push(this.productInfo);
+        });
+    });
+
+    console.log(this.productsInBasketParsed);
+  }
+
+  showProductsInBasket() {
+
+    return this.productsInBasketParsed;
   }
 
   changeProductInCart(id, size, amount) {

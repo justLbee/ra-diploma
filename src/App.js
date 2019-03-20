@@ -50,7 +50,8 @@ class HeaderMenuWrapper extends React.Component {
 
     this.state = {
       basketProductsAmount: 0,
-      basketActiveDisplay: 'none'
+      basketActiveDisplay: 'none',
+      productsInBasket: []
     }
   }
 
@@ -66,9 +67,10 @@ class HeaderMenuWrapper extends React.Component {
 
     this.setState({
       basketProductsAmount: basketCounter,
-      basketActiveDisplay: 'block'
+      basketActiveDisplay: 'block',
     });
   };
+
 
   render() {
     return(

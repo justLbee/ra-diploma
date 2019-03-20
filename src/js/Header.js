@@ -1,6 +1,9 @@
 import React from 'react';
 // const {Link} = ReactRouterDOM;
 import {Link} from "react-router-dom";
+import Basket from "./helpers/basket";
+
+const basket = new Basket();
 
 export default class Header extends React.Component {
   constructor(props) {
@@ -19,6 +22,11 @@ export default class Header extends React.Component {
 
     this.headerPanel = null;
     this.profilePanel = null;
+    this.basketPanel = null;
+
+    this.previousOpenedElement = null;
+
+    this.productsInBasket = [];
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -26,13 +34,12 @@ export default class Header extends React.Component {
       basketProductsAmount: nextProps.basketProductsAmount,
       basketActiveDisplay: nextProps.basketActiveDisplay
     });
-
-    this.blinkBasket();
   }
 
   componentDidMount() {
     this.headerPanel = document.querySelector('.header-main__hidden-panel');
     this.profilePanel = document.querySelector('.hidden-panel__profile');
+    this.basketPanel = document.querySelector('.hidden-panel__basket');
   }
 
   mainMenuClicked(event) {
@@ -95,14 +102,19 @@ export default class Header extends React.Component {
   }
 
   headerPanelClick(event) {
-    if (this.headerPanel.classList.contains('header-main__hidden-panel_visible')) {
+    if (this.headerPanel.classList.contains('header-main__hidden-panel_visible') && this.previousOpenedElement === event.target) {
       this.showHeaderPanelMenu(false, event.target);
     } else {
       this.showHeaderPanelMenu(true, event.target);
     }
+
+    this.previousOpenedElement = event.target;
   }
 
   showHeaderPanelMenu(isOpen, element) {
+    this.profilePanel.classList.remove('hidden-panel__profile_visible');
+    this.basketPanel.classList.remove('hidden-panel__basket_visible');
+
     if (isOpen) {
       this.headerPanel.classList.add('header-main__hidden-panel_visible');
     } else {
@@ -112,18 +124,16 @@ export default class Header extends React.Component {
 
     if (element.classList.contains('header-main__pic_profile')) {
       this.profilePanel.classList.add('hidden-panel__profile_visible');
+    } else if (element.classList.contains('header-main__pic_basket')) {
+      this.checkBasket();
+      this.basketPanel.classList.add('hidden-panel__basket_visible');
     }
   }
 
-  //toDo Возможно нужен генератор
-  blinkBasket() {
-
-    // for(let i = 0; i < 8; i++) {
-    //   console.log(i);
-    //   this.setState({
-    //     blinkCounter: i
-    //   })
-    // }
+  checkBasket() {
+    this.productsInBasket = basket.showProductsInBasket();
+    console.log(this.productsInBasket);
+    console.log(this.productsInBasket.length);
   }
 
   render() {
@@ -178,8 +188,10 @@ export default class Header extends React.Component {
                       <div className="header-main__pic_profile_menu"/>
                     </div>
                     <div className="header-main__pic_border"/>
-                    <div className="header-main__pic header-main__pic_basket">
-                      <div className="header-main__pic_basket_full blink_basket" style={{display: `${this.state.basketActiveDisplay}`}}>{this.state.basketProductsAmount}</div>
+                    <div className="header-main__pic header-main__pic_basket"
+                         onClick={event => this.headerPanelClick(event)}>
+                      <div className="header-main__pic_basket_full blink_basket"
+                           style={{display: `${this.state.basketActiveDisplay}`}}>{this.state.basketProductsAmount}</div>
                       <div className="header-main__pic_basket_menu"/>
                     </div>
                   </div>
@@ -201,57 +213,71 @@ export default class Header extends React.Component {
                   <div className="hidden-panel__basket basket-dropped">
                     <div className="basket-dropped__title">В вашей корзине:</div>
                     <div className="basket-dropped__product-list product-list">
-                      <div className="product-list__item">
-                        <a className="product-list__pic">
-                          <img src="img/product-list__pic_1.jpg" alt="product"/> </a>
-                        <a href="#" className="product-list__product">Ботинки женские, Baldinini</a>
-                        <div className="product-list__fill"></div>
-                        <div className="product-list__price">12 360
-                          <i className="fa fa-rub" aria-hidden="true"></i>
+                      {this.productsInBasket.map(product =>
+                        <div className="product-list__item">
+                          <a className="product-list__pic">
+                            <img src="img/product-list__pic_1.jpg" alt="product"/> </a>
+                          <a href="#" className="product-list__product">Ботинки женские, Baldinini</a>
+                          <div className="product-list__fill"></div>
+                          <div className="product-list__price">12 360
+                            <i className="fa fa-rub" aria-hidden="true"></i>
+                          </div>
+                          <div className="product-list__delete">
+                            <i className="fa fa-times" aria-hidden="true"></i>
+                          </div>
                         </div>
-                        <div className="product-list__delete">
-                          <i className="fa fa-times" aria-hidden="true"></i>
-                        </div>
-                      </div>
-
-                      <div className="product-list__item">
-                        <a className="product-list__pic">
-                          <img src="img/product-list__pic_1.jpg" alt="product"/> </a>
-                        <a href="#" className="product-list__product">Ботинки женские, Baldinini</a>
-                        <div className="product-list__fill"></div>
-                        <div className="product-list__price">12 360
-                          <i className="fa fa-rub" aria-hidden="true"></i>
-                        </div>
-                        <div className="product-list__delete">
-                          <i className="fa fa-times" aria-hidden="true"></i>
-                        </div>
-                      </div>
-                      <div className="product-list__item">
-                        <a className="product-list__pic">
-                          <img src="img/product-list__pic_1.jpg" alt="product"/> </a>
-                        <a href="#" className="product-list__product">Ботинки женские, Baldinini</a>
-                        <div className="product-list__fill"></div>
-                        <div className="product-list__price">12 360
-                          <i className="fa fa-rub" aria-hidden="true"></i>
-                        </div>
-                        <div className="product-list__delete">
-                          <i className="fa fa-times" aria-hidden="true"></i>
-                        </div>
-                      </div>
-                      <div className="product-list__item">
-                        <a className="product-list__pic">
-                          <img src="img/product-list__pic_1.jpg" alt="product"/> </a>
-                        <a href="#" className="product-list__product">Ботинки женские, Baldinini</a>
-                        <div className="product-list__fill"/>
-                        <div className="product-list__price">12 360
-                          <i className="fa fa-rub" aria-hidden="true"/>
-                        </div>
-                        <div className="product-list__delete">
-                          <i className="fa fa-times" aria-hidden="true"/>
-                        </div>
-                      </div>
-
+                      )}
                     </div>
+                    {/*<div className="basket-dropped__product-list product-list">*/}
+                    {/*<div className="product-list__item">*/}
+                    {/*<a className="product-list__pic">*/}
+                    {/*<img src="img/product-list__pic_1.jpg" alt="product"/> </a>*/}
+                    {/*<a href="#" className="product-list__product">Ботинки женские, Baldinini</a>*/}
+                    {/*<div className="product-list__fill"></div>*/}
+                    {/*<div className="product-list__price">12 360*/}
+                    {/*<i className="fa fa-rub" aria-hidden="true"></i>*/}
+                    {/*</div>*/}
+                    {/*<div className="product-list__delete">*/}
+                    {/*<i className="fa fa-times" aria-hidden="true"></i>*/}
+                    {/*</div>*/}
+                    {/*</div>*/}
+                    {/*<div className="product-list__item">*/}
+                    {/*<a className="product-list__pic">*/}
+                    {/*<img src="img/product-list__pic_1.jpg" alt="product"/> </a>*/}
+                    {/*<a href="#" className="product-list__product">Ботинки женские, Baldinini</a>*/}
+                    {/*<div className="product-list__fill"></div>*/}
+                    {/*<div className="product-list__price">12 360*/}
+                    {/*<i className="fa fa-rub" aria-hidden="true"></i>*/}
+                    {/*</div>*/}
+                    {/*<div className="product-list__delete">*/}
+                    {/*<i className="fa fa-times" aria-hidden="true"></i>*/}
+                    {/*</div>*/}
+                    {/*</div>*/}
+                    {/*<div className="product-list__item">*/}
+                    {/*<a className="product-list__pic">*/}
+                    {/*<img src="img/product-list__pic_1.jpg" alt="product"/> </a>*/}
+                    {/*<a href="#" className="product-list__product">Ботинки женские, Baldinini</a>*/}
+                    {/*<div className="product-list__fill"></div>*/}
+                    {/*<div className="product-list__price">12 360*/}
+                    {/*<i className="fa fa-rub" aria-hidden="true"></i>*/}
+                    {/*</div>*/}
+                    {/*<div className="product-list__delete">*/}
+                    {/*<i className="fa fa-times" aria-hidden="true"></i>*/}
+                    {/*</div>*/}
+                    {/*</div>*/}
+                    {/*<div className="product-list__item">*/}
+                    {/*<a className="product-list__pic">*/}
+                    {/*<img src="img/product-list__pic_1.jpg" alt="product"/> </a>*/}
+                    {/*<a href="#" className="product-list__product">Ботинки женские, Baldinini</a>*/}
+                    {/*<div className="product-list__fill"/>*/}
+                    {/*<div className="product-list__price">12 360*/}
+                    {/*<i className="fa fa-rub" aria-hidden="true"/>*/}
+                    {/*</div>*/}
+                    {/*<div className="product-list__delete">*/}
+                    {/*<i className="fa fa-times" aria-hidden="true"/>*/}
+                    {/*</div>*/}
+                    {/*</div>*/}
+                    {/*</div>*/}
                     <a className="basket-dropped__order-button" href="order.html">Оформить заказ</a>
                   </div>
                 </div>
