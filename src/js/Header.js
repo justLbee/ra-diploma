@@ -14,7 +14,7 @@ export default class Header extends React.Component {
     this.state = {
       droppedMenu: false,
       basketProductsAmount: basket.showProductsInBasket().length,
-      basketActiveDisplay: basket.showProductsInBasket().length > 0 ? 'block':'none',
+      basketActiveDisplay: basket.showProductsInBasket().length > 0 ? 'block' : 'none',
       productsInBasket: basket.showProductsInBasket()
     };
 
@@ -31,10 +31,10 @@ export default class Header extends React.Component {
 
   componentWillReceiveProps(nextProps, nextContext) {
     let counter = this.state.basketProductsAmount;
-    if(nextProps.basketProductsAmountIncrease) {
+    if (nextProps.basketProductsAmountIncrease) {
       counter++;
     }
-    
+
     this.setState({
       basketProductsAmount: counter,
     });
@@ -226,30 +226,35 @@ export default class Header extends React.Component {
                       <i className="fa fa-heart-o" aria-hidden="true"/>Избранное</Link>
                     <a href="#">Выйти</a>
                   </div>
-                  <div className="hidden-panel__basket basket-dropped">
-                    <div className="basket-dropped__title">В вашей корзине:</div>
-                    <div className="basket-dropped__product-list product-list">
-                      {this.state.productsInBasket.map(product =>
-                        <div key={`${product.id}${product.size}`} className="product-list__item">
-                          <Link to={`/product/${product.id}`}
-                                onClick={this.productChanged}
-                                className="product-list__pic">
-                            <img src={product.image} width='39px' alt="product"/> </Link>
-                          <Link to={`/product/${product.id}`}
-                                key={product.id}
-                                className="product-list__product">{product.title}, {product.brand} (размер: {product.size}){product.amount > 1 ? `, ${product.amount} шт.` : ''}</Link>
-                          <div className="product-list__fill"/>
-                          <div className="product-list__price">{product.price}
-                            <i className="fa fa-rub" aria-hidden="true"/>
+                  {this.state.productsInBasket.length > 0 ?
+                    <div className="hidden-panel__basket basket-dropped">
+                      <div className="basket-dropped__title">В вашей корзине:</div>
+                      <div className="basket-dropped__product-list product-list">
+                        {this.state.productsInBasket.map(product =>
+                          <div key={`${product.id}${product.size}`} className="product-list__item">
+                            <Link to={`/product/${product.id}`}
+                                  onClick={this.productChanged}
+                                  className="product-list__pic">
+                              <img src={product.image} width='39px' alt="product"/> </Link>
+                            <Link to={`/product/${product.id}`}
+                                  onClick={this.productChanged}
+                                  className="product-list__product">{product.title}, {product.brand} (размер: {product.size}){product.amount > 1 ? `, ${product.amount} шт.` : ''}</Link>
+                            <div className="product-list__fill"/>
+                            <div className="product-list__price">{product.price}
+                              <i className="fa fa-rub" aria-hidden="true"/>
+                            </div>
+                            <div className="product-list__delete"
+                                 onClick={event => this.deleteFromBasket(event, product.id, product.size)}>
+                              <i className="fa fa-times" aria-hidden="true"/>
+                            </div>
                           </div>
-                          <div className="product-list__delete" onClick={event => this.deleteFromBasket(event, product.id, product.size)}>
-                            <i className="fa fa-times" aria-hidden="true"/>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                    <a className="basket-dropped__order-button" href="order.html">Оформить заказ</a>
-                  </div>
+                        )}
+                      </div>
+                      <a className="basket-dropped__order-button" href="order.html">Оформить заказ</a>
+                    </div> :
+                    <div className="hidden-panel__basket basket-dropped">В корзине пока ничего нет. Не знаете, с чего начать? Посмотрите наши новинки!</div>
+                  }
+
                 </div>
               </div>
             </div>
