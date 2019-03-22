@@ -1,7 +1,6 @@
 import React from 'react';
 import {Link} from "react-router-dom";
 
-import history from './helpers/history'
 import Favorites from './helpers/favorites'
 import Paginator from './ComponentLibrary/paginator'
 

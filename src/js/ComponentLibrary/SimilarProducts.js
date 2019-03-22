@@ -1,5 +1,4 @@
 import React from "react";
-import {Link} from "react-router-dom";
 import SimilarSlide from './SimilarSlide'
 
 export default class RecentlyWatched extends React.Component {

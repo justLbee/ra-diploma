@@ -18,7 +18,7 @@ export default class Footer extends React.Component {
                 <div className="subscribe__radio_text">Мужское</div>
               </label>
               <label className="subscribe__radio_label">
-                <input className="subscribe__radio" type="radio" name="subscribe" value="both" checked=""/>
+                <input className="subscribe__radio" type="radio" name="subscribe" value="both" />
                 <div className="subscribe__radio_text">Всё</div>
               </label>
               <input className="subscribe__email" type="email" placeholder="Ваш e-mail"/>

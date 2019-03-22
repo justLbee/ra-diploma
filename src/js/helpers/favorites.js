@@ -1,7 +1,8 @@
 export default class favorites {
   constructor() {
+    this.productsInBasket = [];
     this.favoritesArr = [];
-    this.product;
+    this.product = {};
   }
 
   add(id){
@@ -15,9 +16,9 @@ export default class favorites {
     fetch(`https://neto-api.herokuapp.com/bosa-noga/products/${id}`, params)
       .then(response => response.json())
       .then(product => {
-        // console.log(product);
-        this.product = product.data;
 
+        this.product = product.data;
+        // console.log(this);
         this.favoritesArr.push(this.product);
 
         localStorage.setItem('favorites', JSON.stringify(this.favoritesArr));
@@ -28,9 +29,7 @@ export default class favorites {
     this.favoritesArr = JSON.parse(localStorage.getItem('favorites'));
 
     const removableEl = this.favoritesArr.find(fav => {
-      if (fav.id === id) {
-        return fav;
-      }
+        return fav.id === id;
     });
 
     const removableIndex = this.favoritesArr.indexOf(removableEl);
@@ -45,10 +44,10 @@ export default class favorites {
   }
 
   isFavorite(id) {
-    this.favoritesArr = JSON.parse(localStorage.getItem('favorites'));
+    const favsArr = JSON.parse(localStorage.getItem('favorites'));
 
-    if(this.favoritesArr) {
-      return !!this.favoritesArr.find(fav => {
+    if(favsArr) {
+      return !!favsArr.find(fav => {
         return fav.id === id;
       });
     } else {

@@ -221,10 +221,10 @@ export default class Header extends React.Component {
               <div className="header-main__hidden-panel hidden-panel">
                 <div className="wrapper">
                   <div className="hidden-panel__profile">
-                    <a href="#">Личный кабинет</a>
+                    <a href="/">Личный кабинет</a>
                     <Link onClick={e => this.showHeaderPanelMenu(false)} to='/favorite'>
                       <i className="fa fa-heart-o" aria-hidden="true"/>Избранное</Link>
-                    <a href="#">Выйти</a>
+                    <a href="/">Выйти</a>
                   </div>
                   {this.state.productsInBasket.length > 0 ?
                     <div className="hidden-panel__basket basket-dropped">
@@ -254,7 +254,6 @@ export default class Header extends React.Component {
                     </div> :
                     <div className="hidden-panel__basket basket-dropped">В корзине пока ничего нет. Не знаете, с чего начать? Посмотрите наши новинки!</div>
                   }
-
                 </div>
               </div>
             </div>

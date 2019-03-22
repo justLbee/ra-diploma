@@ -1,7 +1,6 @@
 export default class basket {
   constructor() {
     this.basketId = '';
-    // this.product;
     this.basketAdded = '';
     this.productsInBasket = [];
     this.productsInBasketParsed = [];
@@ -186,18 +185,4 @@ export default class basket {
 
     return this.productsInBasketParsed;
   }
-
-
-  //
-  // isFavorite(id) {
-  //   this.favoritesArr = JSON.parse(localStorage.getItem('favorites'));
-  //
-  //   if(this.favoritesArr) {
-  //     return !!this.favoritesArr.find(fav => {
-  //       return fav.id === id;
-  //     });
-  //   } else {
-  //     return false
-  //   }
-  // }
 }

@@ -8,6 +8,8 @@ import Favorites from './helpers/favorites'
 import Paginator from './ComponentLibrary/paginator'
 import CategoryGetter from './helpers/categoryGetter'
 
+import RecentlyWatched from './ComponentLibrary/RecentlyWatched'
+
 const favorite = new Favorites();
 const categoryGetter = new CategoryGetter();
 
@@ -160,7 +162,7 @@ export class Catalogue extends React.Component {
       const replacedString = `&${this.filter[filterType].name}=${this.filter[filterType].value}`;
       this.search.searchString = this.search.searchString.replace(replacedString, '');
 
-      switch (filterType) {
+      switch(filterType) {
         case 'type':
           this.filter[filterType].filter.classList.remove('chosen');
           break;
@@ -170,10 +172,12 @@ export class Catalogue extends React.Component {
         case 'reason':
           this.filter[filterType].filter.classList.remove('chosen');
           break;
+        default:
+          //do nothing
       }
     }
 
-    switch (filterType) {
+    switch(filterType) {
       case 'type':
         filter.classList.add('chosen');
         break;
@@ -186,6 +190,9 @@ export class Catalogue extends React.Component {
       case 'page':
         document.querySelector('.active').classList.remove('active');
         filter.parentNode.classList.add('active');
+        break;
+      default:
+      //do nothing
     }
 
     this.filter[filterType].name = filterType;
@@ -290,7 +297,7 @@ export class Catalogue extends React.Component {
   }
 
   brandSearch(event) {
-    event.preventDefault;
+    event.preventDefault();
     this.choseFilter(event.target, 'brand', this.state.brand);
   }
 
@@ -671,28 +678,7 @@ export class Catalogue extends React.Component {
           </section>
         </main>
 
-        <section className="product-catalogue__overlooked-slider">
-          <h3>Вы смотрели:</h3>
-          <div className="overlooked-slider">
-            <div className="overlooked-slider__arrow overlooked-slider__arrow_left arrow"></div>
-            <div className="overlooked-slider__item overlooked-slider__item-1">
-              <a href="product-card-desktop.html"></a>
-            </div>
-            <div className="overlooked-slider__item overlooked-slider__item-2">
-              <a href="product-card-desktop.html"></a>
-            </div>
-            <div className="overlooked-slider__item overlooked-slider__item-3">
-              <a href="product-card-desktop.html"></a>
-            </div>
-            <div className="overlooked-slider__item overlooked-slider__item-4">
-              <a href="product-card-desktop.html"></a>
-            </div>
-            <div className="overlooked-slider__item overlooked-slider__item-5">
-              <a href="product-card-desktop.html"></a>
-            </div>
-            <div className="overlooked-slider__arrow overlooked-slider__arrow_right arrow"></div>
-          </div>
-        </section>
+        <RecentlyWatched/>
       </div>
     )
   }

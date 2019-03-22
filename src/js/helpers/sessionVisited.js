@@ -1,6 +1,3 @@
-import React from "react";
-
-
 export default class sessionVisited {
   constructor() {
     this.visitedArr = JSON.parse(sessionStorage.getItem('recentlyWatched'));

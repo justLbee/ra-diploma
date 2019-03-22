@@ -1,5 +1,4 @@
 import React from 'react';
-import throttle from "./helpers/throttle";
 import {Link} from "react-router-dom";
 
 import CategoryGetter from './helpers/categoryGetter'
@@ -8,13 +7,11 @@ import RecentlyWatched from './ComponentLibrary/RecentlyWatched'
 import SimilarProducts from "./ComponentLibrary/SimilarProducts"
 import SessionStorageVisited from "./helpers/sessionVisited"
 import Basket from "./helpers/basket"
-import Header from "./Header"
 
 const categoryGetter = new CategoryGetter();
 const favorite = new Favorites();
 const sessionVisited = new SessionStorageVisited();
 const basket = new Basket();
-// const header = new Header();
 
 export class ProductCard extends React.Component {
   constructor(props) {
@@ -216,7 +213,7 @@ export class ProductCard extends React.Component {
     }
 
     if(this.state.basketDisabled) {
-      event.preventDefault;
+      event.preventDefault();
     } else {
       console.log(this.props);
       basket.addToBasket(id, size, amount);
@@ -258,7 +255,7 @@ export class ProductCard extends React.Component {
                 {this.state.type}
               </Link>
             </li>
-            <li className="site-path__item"><a href="#">{this.state.title}</a></li>
+            <li className="site-path__item">{this.state.title}</li>
           </ul>
         </div>
 
@@ -277,7 +274,7 @@ export class ProductCard extends React.Component {
                     {this.state.images.map((image, index) =>
                       <div key={index} className={`favourite-product-slider__item `}
                            style={{background: `url(${image}) no-repeat`, backgroundSize: 'cover'}}>
-                        <a href="#"/>
+                        <a />
                       </div>
                     )}
                     {this.state.images.length > 3 ?
@@ -291,7 +288,7 @@ export class ProductCard extends React.Component {
               <div className="main-screen__favourite-product-pic"
                    style={{background: `url(${this.state.images[0]}) no-repeat`, backgroundSize: 'cover'}}
               >
-                <a href="#" className="main-screen__favourite-product-pic__zoom"/>
+                <a className="main-screen__favourite-product-pic__zoom"/>
               </div>
 
               <div className="main-screen__product-info">
@@ -307,7 +304,7 @@ export class ProductCard extends React.Component {
                     </tr>
                     <tr>
                       <td className="left-col">Производитель:</td>
-                      <td className="right-col"><a href="#"><span className="producer">{this.state.brand}</span></a>
+                      <td className="right-col"><a><span className="producer">{this.state.brand}</span></a>
                       </td>
                     </tr>
                     <tr>
@@ -335,7 +332,7 @@ export class ProductCard extends React.Component {
                     <li key={index}><a onClick={event => this.choseSize(event, size)}>{size.size}</a></li>)}
                 </ul>
                 <div className="size-wrapper">
-                  <a href="#"><span className="size-rule"/><p className="size-table">Таблица размеров</p></a>
+                  <a><span className="size-rule"/><p className="size-table">Таблица размеров</p></a>
                 </div>
                 <a className="in-favourites-wrapper" onClick={event => this.addToFavorite(event, this.state.id)}>
                   <div className="favourite"/>
