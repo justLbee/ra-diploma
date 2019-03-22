@@ -55,18 +55,9 @@ class HeaderMenuWrapper extends React.Component {
     }
   }
 
-  toggleBasket = (increase) => {
-    console.log(increase);
-    let basketCounter = this.state.basketProductsAmount;
-
-    if (increase) {
-      basketCounter++;
-    } else {
-      basketCounter--;
-    }
-
+  toggleBasket = (amount) => {
     this.setState({
-      basketProductsAmount: basketCounter,
+      basketProductsAmount: amount,
       basketActiveDisplay: 'block',
     });
   };

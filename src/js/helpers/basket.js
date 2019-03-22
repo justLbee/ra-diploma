@@ -52,8 +52,6 @@ export default class basket {
           this.basketId = basket.data.id;
           this.productsInBasket = basket.data.products;
 
-          console.log(this.productsInBasket);
-
           localStorage.setItem('basketId', JSON.stringify(this.basketId));
 
           this.parseItemsInBasket();

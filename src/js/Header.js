@@ -202,7 +202,7 @@ export default class Header extends React.Component {
                     <div className="header-main__pic header-main__pic_basket"
                          onClick={event => this.headerPanelClick(event)}>
                       <div className="header-main__pic_basket_full blink_basket"
-                           style={{display: `${this.state.basketActiveDisplay}`}}>{this.state.productsInBasket.length}</div>
+                           style={{display: `${this.state.basketActiveDisplay}`}}>{this.state.basketProductsAmount}</div>
                       <div className="header-main__pic_basket_menu"/>
                     </div>
                   </div>
