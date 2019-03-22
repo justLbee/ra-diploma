@@ -2,6 +2,7 @@ import React from 'react';
 // const {Link} = ReactRouterDOM;
 import {Link} from "react-router-dom";
 import Basket from "./helpers/basket";
+import {ProductCard} from "./ProductCard";
 
 const basket = new Basket();
 
@@ -12,8 +13,9 @@ export default class Header extends React.Component {
     this.state = {
       droppedMenu: false,
       basketProductsAmount: 0,
-      basketActiveDisplay: 'none',
-      blinkCounter: 0
+      basketActiveDisplay: basket.showProductsInBasket().length > 0 ? 'block':'none',
+      blinkCounter: 0,
+      productsInBasket: basket.showProductsInBasket()
     };
 
     this.category = '';
@@ -26,7 +28,8 @@ export default class Header extends React.Component {
 
     this.previousOpenedElement = null;
 
-    this.productsInBasket = [];
+    // this.productsInBasket = [];
+    console.log(this.state.productsInBasket.length);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -131,9 +134,14 @@ export default class Header extends React.Component {
   }
 
   checkBasket() {
-    this.productsInBasket = basket.showProductsInBasket();
-    console.log(this.productsInBasket);
-    console.log(this.productsInBasket.length);
+    this.setState({
+      productsInBasket: basket.showProductsInBasket()
+    });
+  }
+
+  productChanged() {
+    const productCard = new ProductCard();
+    productCard.getProductData();
   }
 
   render() {
@@ -191,7 +199,7 @@ export default class Header extends React.Component {
                     <div className="header-main__pic header-main__pic_basket"
                          onClick={event => this.headerPanelClick(event)}>
                       <div className="header-main__pic_basket_full blink_basket"
-                           style={{display: `${this.state.basketActiveDisplay}`}}>{this.state.basketProductsAmount}</div>
+                           style={{display: `${this.state.basketActiveDisplay}`}}>{this.state.productsInBasket.length}</div>
                       <div className="header-main__pic_basket_menu"/>
                     </div>
                   </div>
@@ -213,71 +221,25 @@ export default class Header extends React.Component {
                   <div className="hidden-panel__basket basket-dropped">
                     <div className="basket-dropped__title">В вашей корзине:</div>
                     <div className="basket-dropped__product-list product-list">
-                      {this.productsInBasket.map(product =>
-                        <div className="product-list__item">
-                          <a className="product-list__pic">
-                            <img src="img/product-list__pic_1.jpg" alt="product"/> </a>
-                          <a href="#" className="product-list__product">Ботинки женские, Baldinini</a>
-                          <div className="product-list__fill"></div>
-                          <div className="product-list__price">12 360
-                            <i className="fa fa-rub" aria-hidden="true"></i>
+                      {this.state.productsInBasket.map(product =>
+                        <div key={product.id} className="product-list__item">
+                          <Link to={`/product/${product.id}`}
+                                onClick={this.productChanged}
+                                className="product-list__pic">
+                            <img src={product.image} width='39px' alt="product"/> </Link>
+                          <Link to={`/product/${product.id}`}
+                                key={product.id}
+                                className="product-list__product">{product.title}, {product.brand}</Link>
+                          <div className="product-list__fill"/>
+                          <div className="product-list__price">{product.price}
+                            <i className="fa fa-rub" aria-hidden="true"/>
                           </div>
                           <div className="product-list__delete">
-                            <i className="fa fa-times" aria-hidden="true"></i>
+                            <i className="fa fa-times" aria-hidden="true"/>
                           </div>
                         </div>
                       )}
                     </div>
-                    {/*<div className="basket-dropped__product-list product-list">*/}
-                    {/*<div className="product-list__item">*/}
-                    {/*<a className="product-list__pic">*/}
-                    {/*<img src="img/product-list__pic_1.jpg" alt="product"/> </a>*/}
-                    {/*<a href="#" className="product-list__product">Ботинки женские, Baldinini</a>*/}
-                    {/*<div className="product-list__fill"></div>*/}
-                    {/*<div className="product-list__price">12 360*/}
-                    {/*<i className="fa fa-rub" aria-hidden="true"></i>*/}
-                    {/*</div>*/}
-                    {/*<div className="product-list__delete">*/}
-                    {/*<i className="fa fa-times" aria-hidden="true"></i>*/}
-                    {/*</div>*/}
-                    {/*</div>*/}
-                    {/*<div className="product-list__item">*/}
-                    {/*<a className="product-list__pic">*/}
-                    {/*<img src="img/product-list__pic_1.jpg" alt="product"/> </a>*/}
-                    {/*<a href="#" className="product-list__product">Ботинки женские, Baldinini</a>*/}
-                    {/*<div className="product-list__fill"></div>*/}
-                    {/*<div className="product-list__price">12 360*/}
-                    {/*<i className="fa fa-rub" aria-hidden="true"></i>*/}
-                    {/*</div>*/}
-                    {/*<div className="product-list__delete">*/}
-                    {/*<i className="fa fa-times" aria-hidden="true"></i>*/}
-                    {/*</div>*/}
-                    {/*</div>*/}
-                    {/*<div className="product-list__item">*/}
-                    {/*<a className="product-list__pic">*/}
-                    {/*<img src="img/product-list__pic_1.jpg" alt="product"/> </a>*/}
-                    {/*<a href="#" className="product-list__product">Ботинки женские, Baldinini</a>*/}
-                    {/*<div className="product-list__fill"></div>*/}
-                    {/*<div className="product-list__price">12 360*/}
-                    {/*<i className="fa fa-rub" aria-hidden="true"></i>*/}
-                    {/*</div>*/}
-                    {/*<div className="product-list__delete">*/}
-                    {/*<i className="fa fa-times" aria-hidden="true"></i>*/}
-                    {/*</div>*/}
-                    {/*</div>*/}
-                    {/*<div className="product-list__item">*/}
-                    {/*<a className="product-list__pic">*/}
-                    {/*<img src="img/product-list__pic_1.jpg" alt="product"/> </a>*/}
-                    {/*<a href="#" className="product-list__product">Ботинки женские, Baldinini</a>*/}
-                    {/*<div className="product-list__fill"/>*/}
-                    {/*<div className="product-list__price">12 360*/}
-                    {/*<i className="fa fa-rub" aria-hidden="true"/>*/}
-                    {/*</div>*/}
-                    {/*<div className="product-list__delete">*/}
-                    {/*<i className="fa fa-times" aria-hidden="true"/>*/}
-                    {/*</div>*/}
-                    {/*</div>*/}
-                    {/*</div>*/}
                     <a className="basket-dropped__order-button" href="order.html">Оформить заказ</a>
                   </div>
                 </div>

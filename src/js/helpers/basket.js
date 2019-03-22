@@ -51,8 +51,11 @@ export default class basket {
           console.log(this.productsInBasket);
 
           localStorage.setItem('basketId', JSON.stringify(this.basketId));
-          localStorage.setItem('productsInBasket', JSON.stringify(this.productsInBasket));
-          this.getProductsFromLocalStorage();
+
+          this.parseItemsInBasket();
+          // localStorage.setItem('productsInBasket', JSON.stringify(this.productsInBasket));
+          // this.getProductsFromLocalStorage();
+          // this.getProductsInBasketFromServer();
         })
     }
     // fetch(`https://neto-api.herokuapp.com/bosa-noga/products/${id}`, params)
@@ -86,9 +89,7 @@ export default class basket {
       })
   }
 
-  //toDo надо придумать, как получить информацию о товарах, которые в корзине
-  getProductsFromLocalStorage() {
-    const products = JSON.parse(localStorage.getItem('productsInBasket'));
+  parseItemsInBasket() {
     const params = {
       method: 'GET',
       headers: new Headers({
@@ -96,25 +97,30 @@ export default class basket {
       }),
     };
 
-    products.forEach(product => {
+    this.productsInBasket.forEach(product => {
       fetch(`https://neto-api.herokuapp.com/bosa-noga/products/${product.id}`, params)
         .then(response => response.json())
         .then(element => {
           this.productInfo = {
             title: element.data.title,
+            brand: element.data.brand,
+            price: element.data.price,
+            image: element.data.images[0],
+            amount: product.amount,
+            size: product.size,
+            id: product.id
           };
-        })
-        .finally(() => {
-          this.productsInBasketParsed.push(this.productInfo);
-        });
-    });
 
-    console.log(this.productsInBasketParsed);
+          this.productsInBasketParsed.push(this.productInfo);
+
+          localStorage.setItem('productsInBasket', JSON.stringify(this.productsInBasketParsed));
+        })
+    });
   }
 
   showProductsInBasket() {
-
-    return this.productsInBasketParsed;
+    const productsInBasket = JSON.parse(localStorage.getItem('productsInBasket'));
+    return productsInBasket;
   }
 
   changeProductInCart(id, size, amount) {

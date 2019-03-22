@@ -83,16 +83,6 @@ export class Catalogue extends React.Component {
   getCategory() {
     const searchCategory = Number(this.props.location.search.substr(12, 2));
 
-    // if (this.props.categories && this.props.categories.length > 0) {
-    //   const category = this.props.categories.find(el => {
-    //     return el.id === searchCategory ? el.title : '';
-    //   });
-    //
-    //   this.setState({
-    //     category: category
-    //   });
-    // }
-
     this.setState({
       category: categoryGetter.getCategoryName(searchCategory)
     });
@@ -165,9 +155,6 @@ export class Catalogue extends React.Component {
 
   choseFilter(element, filterType, search, category) {
     const filter = element;
-
-    // const replacedPage = `&page=${this.filter.page.value}`;
-    // this.search.searchString = this.search.searchString.replace(replacedPage, '');
 
     if (this.filter[filterType].filter || search === '') {
       const replacedString = `&${this.filter[filterType].name}=${this.filter[filterType].value}`;
@@ -341,8 +328,6 @@ export class Catalogue extends React.Component {
   }
 
   inFavorites(id) {
-    // console.log(this.inFavoritesArr);
-
     const itemOnPage = this.inFavoritesArr.find(element => {
       return element.id === id;
     });
