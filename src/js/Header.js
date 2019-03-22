@@ -9,12 +9,12 @@ const basket = new Basket();
 export default class Header extends React.Component {
   constructor(props) {
     super(props);
+    basket.getProductsInBasketFromServer();
 
     this.state = {
       droppedMenu: false,
-      basketProductsAmount: 0,
+      basketProductsAmount: basket.showProductsInBasket().length,
       basketActiveDisplay: basket.showProductsInBasket().length > 0 ? 'block':'none',
-      blinkCounter: 0,
       productsInBasket: basket.showProductsInBasket()
     };
 
@@ -27,9 +27,6 @@ export default class Header extends React.Component {
     this.basketPanel = null;
 
     this.previousOpenedElement = null;
-
-    // this.productsInBasket = [];
-    console.log(this.state.productsInBasket.length);
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
@@ -144,6 +141,12 @@ export default class Header extends React.Component {
     productCard.getProductData();
   }
 
+  deleteFromBasket(event, id, size) {
+    this.setState({
+      productsInBasket: basket.removeItemFromBasket(id, size)
+    });
+  }
+
   render() {
     return (
       <div>
@@ -222,7 +225,7 @@ export default class Header extends React.Component {
                     <div className="basket-dropped__title">В вашей корзине:</div>
                     <div className="basket-dropped__product-list product-list">
                       {this.state.productsInBasket.map(product =>
-                        <div key={product.id} className="product-list__item">
+                        <div key={`${product.id}${product.size}`} className="product-list__item">
                           <Link to={`/product/${product.id}`}
                                 onClick={this.productChanged}
                                 className="product-list__pic">
@@ -234,7 +237,7 @@ export default class Header extends React.Component {
                           <div className="product-list__price">{product.price}
                             <i className="fa fa-rub" aria-hidden="true"/>
                           </div>
-                          <div className="product-list__delete">
+                          <div className="product-list__delete" onClick={event => this.deleteFromBasket(event, product.id, product.size)}>
                             <i className="fa fa-times" aria-hidden="true"/>
                           </div>
                         </div>
