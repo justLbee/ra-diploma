@@ -49,24 +49,29 @@ class HeaderMenuWrapper extends React.Component {
     super(props);
 
     this.state = {
-      basketProductsAmount: 0,
+      basketProductsAmount: false,
       basketActiveDisplay: 'none',
       productsInBasket: []
     }
   }
 
-  toggleBasket = (amount) => {
-    this.setState({
-      basketProductsAmount: amount,
-      basketActiveDisplay: 'block',
-    });
+  toggleBasket = (increase) => {
+    if(increase) {
+      this.setState({
+        basketProductsAmountIncrease: true,
+      });
+    } else {
+      this.setState({
+        basketProductsAmountIncrease: false,
+      });
+    }
   };
 
 
   render() {
     return(
       <div>
-        <Header basketProductsAmount={this.state.basketProductsAmount} basketActiveDisplay={this.state.basketActiveDisplay}/>
+        <Header basketProductsAmountIncrease={this.state.basketProductsAmountIncrease}/>
         <Main onClick={this.toggleBasket}/>
       </div>
     )

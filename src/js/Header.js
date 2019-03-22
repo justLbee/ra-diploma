@@ -30,9 +30,13 @@ export default class Header extends React.Component {
   }
 
   componentWillReceiveProps(nextProps, nextContext) {
+    let counter = this.state.basketProductsAmount;
+    if(nextProps.basketProductsAmountIncrease) {
+      counter++;
+    }
+    
     this.setState({
-      basketProductsAmount: nextProps.basketProductsAmount,
-      basketActiveDisplay: nextProps.basketActiveDisplay
+      basketProductsAmount: counter,
     });
   }
 
@@ -143,7 +147,8 @@ export default class Header extends React.Component {
 
   deleteFromBasket(event, id, size) {
     this.setState({
-      productsInBasket: basket.removeItemFromBasket(id, size)
+      productsInBasket: basket.removeItemFromBasket(id, size),
+      basketProductsAmount: basket.showProductsInBasket().length
     });
   }
 
@@ -232,7 +237,7 @@ export default class Header extends React.Component {
                             <img src={product.image} width='39px' alt="product"/> </Link>
                           <Link to={`/product/${product.id}`}
                                 key={product.id}
-                                className="product-list__product">{product.title}, {product.brand}</Link>
+                                className="product-list__product">{product.title}, {product.brand} (размер: {product.size}){product.amount > 1 ? `, ${product.amount} шт.` : ''}</Link>
                           <div className="product-list__fill"/>
                           <div className="product-list__price">{product.price}
                             <i className="fa fa-rub" aria-hidden="true"/>

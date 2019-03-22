@@ -172,15 +172,17 @@ export default class basket {
         // this.productsInBasket = basket.products;
       })
       .finally(() => {
-        const removable = this.productsInBasketParsed.find(product => {
-          return product.id === id
-        });
-        const removableIndex = this.productsInBasketParsed.indexOf(removable);
 
-        this.productsInBasketParsed.splice(removableIndex, 1);
-
-        localStorage.setItem('productsInBasket', JSON.stringify(this.productsInBasketParsed));
       });
+
+    const removable = this.productsInBasketParsed.find(product => {
+      return product.id === id
+    });
+    const removableIndex = this.productsInBasketParsed.indexOf(removable);
+
+    this.productsInBasketParsed.splice(removableIndex, 1);
+
+    localStorage.setItem('productsInBasket', JSON.stringify(this.productsInBasketParsed));
 
     return this.productsInBasketParsed;
   }
