@@ -34,7 +34,7 @@ export default class Header extends React.Component {
     if (nextProps.basketProductsAmountIncrease) {
       counter++;
     }
-    
+
     this.setState({
       basketProductsAmount: counter,
       basketActiveDisplay: counter > 0 ? 'block' : 'none'

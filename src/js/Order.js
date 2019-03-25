@@ -51,6 +51,8 @@ export class Order extends React.Component {
       if(product.id === id) {
         isIncreased ? product.amount++:product.amount--;
         return product;
+      } else {
+        return {};
       }
     });
 
