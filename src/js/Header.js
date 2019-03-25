@@ -34,10 +34,10 @@ export default class Header extends React.Component {
     if (nextProps.basketProductsAmountIncrease) {
       counter++;
     }
-
+    
     this.setState({
       basketProductsAmount: counter,
-      basketActiveDisplay: 'block'
+      basketActiveDisplay: counter > 0 ? 'block' : 'none'
     });
   }
 
@@ -155,7 +155,6 @@ export default class Header extends React.Component {
   }
 
   completeOrder(event) {
-    console.log(event.currentTarget.parentNode);
     this.showHeaderPanelMenu(false, event.currentTarget.parentNode);
   }
 
