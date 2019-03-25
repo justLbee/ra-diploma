@@ -105,7 +105,8 @@ export default class basket {
             image: element.data.images[0],
             amount: product.amount,
             size: product.size,
-            id: product.id
+            id: product.id,
+            color: element.data.color
           };
 
           this.productsInBasketParsed.push(this.productInfo);
@@ -139,11 +140,13 @@ export default class basket {
     fetch(`https://neto-api.herokuapp.com/bosa-noga/cart/${this.basketId}`, params)
       .then(response => response.json())
       .then(basket => {
-        // console.log(product);
-        this.basketId = basket.data.id;
-        this.productsInBasket = basket.products;
-
-        console.log(this.productsInBasket);
+        if(basket.status !== 'error') {
+          this.productsInBasket = basket.data.products;
+          this.parseItemsInBasket();
+        } else {
+          this.basketId = '';
+          localStorage.removeItem('basketId');
+        }
       })
   }
 

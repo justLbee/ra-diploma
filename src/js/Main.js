@@ -9,6 +9,7 @@ import {News} from "./News";
 import {Catalogue} from "./Catalogue";
 import {Favorite} from "./Favorite";
 import {ProductCard} from "./ProductCard"
+import {Order} from "./Order"
 
 import { Switch, Route } from "react-router-dom";
 
@@ -75,6 +76,7 @@ export default class Main extends React.Component {
           <Route path='/catalogue' component={Catalogue}/>
           <Route path='/favorite' component={Favorite}/>
           <Route path='/product/:id' component={this.WithProduct}/>
+          <Route path='/order' component={Order}/>
         </Switch>
       </main>
     )

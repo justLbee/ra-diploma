@@ -250,7 +250,7 @@ export default class Header extends React.Component {
                           </div>
                         )}
                       </div>
-                      <a className="basket-dropped__order-button" href="order.html">Оформить заказ</a>
+                      <Link to='/order' className="basket-dropped__order-button" href="order.html">Оформить заказ</Link>
                     </div> :
                     <div className="hidden-panel__basket basket-dropped">В корзине пока ничего нет. Не знаете, с чего начать? Посмотрите наши новинки!</div>
                   }
