@@ -215,9 +215,9 @@ export class ProductCard extends React.Component {
     if(this.state.basketDisabled) {
       event.preventDefault();
     } else {
-      console.log(this.props);
       basket.addToBasket(id, size, amount);
-      this.props.onClick(basket.showProductsInBasket().length + 1);
+      console.log(basket.showProductsInBasket().length + 1);
+      this.props.onClick(true);
     }
   }
 

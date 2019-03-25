@@ -42,6 +42,7 @@ export default class basket {
           this.basketId = basket.data.id;
 
           localStorage.setItem('basketId', JSON.stringify(this.basketId));
+          this.getProductsInBasketFromServer();
         })
     } else {
       fetch(`https://neto-api.herokuapp.com/bosa-noga/cart/${this.basketId}`, params)
@@ -81,7 +82,6 @@ export default class basket {
           }
         })
     }
-
   }
 
   parseItemsInBasket() {
@@ -118,7 +118,8 @@ export default class basket {
 
   showProductsInBasket() {
     this.productsInBasketParsed = JSON.parse(localStorage.getItem('productsInBasket'));
-    return this.productsInBasketParsed;
+    return this.productsInBasketParsed ? this.productsInBasketParsed : [];
+    // return this.productsInBasketParsed;
   }
 
   changeProductInCart(id, size, amount) {
@@ -184,8 +185,19 @@ export default class basket {
 
     this.productsInBasketParsed.splice(removableIndex, 1);
 
-    localStorage.setItem('productsInBasket', JSON.stringify(this.productsInBasketParsed));
+    if(this.productsInBasketParsed.length === 0) {
+      localStorage.removeItem('basketId');
+      localStorage.removeItem('productsInBasket');
+      return [];
+    } else {
+      localStorage.setItem('productsInBasket', JSON.stringify(this.productsInBasketParsed));
 
-    return this.productsInBasketParsed;
+      return this.productsInBasketParsed;
+    }
+  }
+
+  clearBasket() {
+    localStorage.removeItem('basketId');
+    localStorage.removeItem('productsInBasket');
   }
 }

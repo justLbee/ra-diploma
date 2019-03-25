@@ -37,6 +37,7 @@ export default class Header extends React.Component {
 
     this.setState({
       basketProductsAmount: counter,
+      basketActiveDisplay: 'block'
     });
   }
 
@@ -148,8 +149,14 @@ export default class Header extends React.Component {
   deleteFromBasket(event, id, size) {
     this.setState({
       productsInBasket: basket.removeItemFromBasket(id, size),
-      basketProductsAmount: basket.showProductsInBasket().length
+      basketProductsAmount: basket.showProductsInBasket().length,
+      basketActiveDisplay: basket.showProductsInBasket().length === 1 ? 'block' : 'none',
     });
+  }
+
+  completeOrder(event) {
+    console.log(event.currentTarget.parentNode);
+    this.showHeaderPanelMenu(false, event.currentTarget.parentNode);
   }
 
   render() {
@@ -226,7 +233,7 @@ export default class Header extends React.Component {
                       <i className="fa fa-heart-o" aria-hidden="true"/>Избранное</Link>
                     <a href="/">Выйти</a>
                   </div>
-                  {this.state.productsInBasket.length > 0 ?
+                  {this.state.productsInBasket && this.state.productsInBasket.length > 0 ?
                     <div className="hidden-panel__basket basket-dropped">
                       <div className="basket-dropped__title">В вашей корзине:</div>
                       <div className="basket-dropped__product-list product-list">
@@ -250,7 +257,7 @@ export default class Header extends React.Component {
                           </div>
                         )}
                       </div>
-                      <Link to='/order' className="basket-dropped__order-button" href="order.html">Оформить заказ</Link>
+                      <Link to='/order' className="basket-dropped__order-button" onClick={event => this.completeOrder(event)}>Оформить заказ</Link>
                     </div> :
                     <div className="hidden-panel__basket basket-dropped">В корзине пока ничего нет. Не знаете, с чего начать? Посмотрите наши новинки!</div>
                   }

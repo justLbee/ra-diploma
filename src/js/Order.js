@@ -117,6 +117,8 @@ export class Order extends React.Component {
     } else {
       sessionStorage.setItem('customerInformation', JSON.stringify(this.customerInformation));
       history.push(`/orderdone`);
+
+      basket.clearBasket();
     }
   }
 
