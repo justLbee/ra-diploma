@@ -53,7 +53,6 @@ export class Catalogue extends React.Component {
       discount: {name: '', value: '', filter: null},
       minPrice: {name: '', value: '', filter: null},
       maxPrice: {name: '', value: '', filter: null},
-      // page: {name: '', value: '', filter: null},
       discounted: {name: '', value: '', filter: null},
       sortBy: {name: '', value: '', filter: null}
     };
@@ -79,7 +78,7 @@ export class Catalogue extends React.Component {
   componentDidMount() {
     this.throttledUpdatePath = throttle(this.updatePath, 2000);
     this.getServerData(this.props.location.search);
-    this.getCategory()
+    this.getCategory();
   }
 
   getCategory() {
