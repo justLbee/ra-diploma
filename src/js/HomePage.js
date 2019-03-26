@@ -1,16 +1,29 @@
 import React from 'react';
 // import { Link } from "react-router-dom";
+import CategoryGetter from './helpers/categoryGetter'
+import NewDealsProducts from "./ComponentLibrary/NewDealsProducts"
+
+const categoryGetter = new CategoryGetter();
 
 export default class HomePage extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      preloader: ''
-    }
+      preloader: '',
+      featuredProducts: [],
+      activeFeatured: 'new-deals__menu-item_active'
+    };
+
+    this.featuredProducts = [];
+    this.categories = [];
+
+    this.featuredElement = null;
   }
 
-  componentWillMount() {
+  componentDidMount() {
+    this.hidePreloader(false);
+
     const params = {
       method: 'GET',
       headers: new Headers({
@@ -18,14 +31,57 @@ export default class HomePage extends React.Component {
       })
     };
 
-    fetch('https://neto-api.herokuapp.com/bosa-noga/featured ', params)
+    fetch('https://neto-api.herokuapp.com/bosa-noga/featured', params)
       .then(response => response.json())
       .then(featured => {
-        // console.log(featured.data);
+        this.featuredProducts = featured.data;
+
         this.setState({
           preloader: 'hidden'
         })
+      })
+      .finally(() => {
+        this.categories = categoryGetter.getAllCategories();
+        this.hidePreloader(true);
+
+        this.categoryFilter(null, 13);
+        // this.inFavorites();
       });
+  }
+
+  categoryFilter(event, categoryId) {
+    if(event && !this.featuredElement) {
+      document.querySelector('.new-deals__menu-item_active').classList.remove('new-deals__menu-item_active');
+    }
+
+    if(this.featuredElement){
+      this.featuredElement.classList.remove('new-deals__menu-item_active');
+    }
+
+    if(event) {
+      event.target.parentNode.classList.add('new-deals__menu-item_active');
+      this.featuredElement = event.target.parentNode;
+    }
+    const filteredProducts = this.featuredProducts.filter(product => {
+      return product.categoryId === categoryId;
+    });
+
+    this.setState({
+      featuredProducts: filteredProducts
+    });
+    // console.log(filteredProducts);
+  }
+
+  hidePreloader(isHidden = false) {
+    if (isHidden) {
+      this.setState({
+        preloader: 'hidden'
+      });
+    } else {
+      this.setState({
+        preloader: ''
+      });
+    }
   }
 
   render() {
@@ -73,45 +129,24 @@ export default class HomePage extends React.Component {
             <h2 className="h2">Новинки</h2>
             <div className="new-deals__menu">
               <ul className="new-deals__menu-items">
-                <li className="new-deals__menu-item new-deals__menu-item_active">
-                  <a href="#">Женская обувь</a>
+                <li className="new-deals__menu-item new-deals__menu-item_active" id="women">
+                  <a onClick={event => this.categoryFilter(event, 13)}>Женская обувь</a>
                 </li>
-                <li className="new-deals__menu-item">
-                  <a href="#">Мужская обувь</a>
+                <li className="new-deals__menu-item" id="men">
+                  <a onClick={event => this.categoryFilter(event, 12)}>Мужская обувь</a>
                 </li>
-                <li className="new-deals__menu-item">
-                  <a href="#">Детская обувь</a>
+                <li className="new-deals__menu-item" id="children">
+                  <a onClick={event => this.categoryFilter(event, 15)}>Детская обувь</a>
                 </li>
-                <li className="new-deals__menu-item">
-                  <a href="#">аксессуары</a>
+                <li className="new-deals__menu-item" id="accessories">
+                  <a onClick={event => this.categoryFilter(event, 14)}>аксессуары</a>
                 </li>
-                <li className="new-deals__menu-item">
-                  <a href="#">для дома</a>
+                <li className="new-deals__menu-item" id="home">
+                  <a onClick={event => this.categoryFilter(event, 14)}>для дома</a>
                 </li>
               </ul>
             </div>
-            <div className="new-deals__slider">
-              <div className="new-deals__arrow new-deals__arrow_left arrow" />
-              <div className="new-deals__product new-deals__product_first">
-                <a href="#"></a>
-              </div>
-
-              <div className="new-deals__product new-deals__product_active">
-                <a href="catalogue.html"></a>
-                <div className="new-deals__product_favorite" />
-              </div>
-              <div className="new-deals__product new-deals__product_last">
-                <a href="#"></a>
-              </div>
-              <div className="new-deals__arrow new-deals__arrow_right arrow" />
-            </div>
-            <div className="new-deals__product-info">
-              <a href="product-card-desktop.html" className="h3">Босоножки женские</a>
-              <p>Производитель:
-                <span>Damlax</span>
-              </p>
-              <h3 className="h3">5 950 ₽</h3>
-            </div>
+            <NewDealsProducts filteredProducts={this.state.featuredProducts}/>
           </section>
 
           <section className="sales-and-news wave-bottom">

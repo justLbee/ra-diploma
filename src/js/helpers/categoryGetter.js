@@ -40,4 +40,8 @@ export default class getCategory {
       return oldCategory;
     }
   }
+
+  getAllCategories() {
+    return this.categories;
+  }
 }
