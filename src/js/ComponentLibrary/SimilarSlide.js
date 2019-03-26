@@ -11,7 +11,7 @@ const SimilarSlide = ({product, display, prodId}) => {
             <Link to={`/product/${product.id}`}
                   key={product.id} onClick={() => productChanged(product.id)}><img
               src={product.images[0]}
-              className="similar-products-slider__item-pic-1" alt="Ботинки женские"/>
+              className="similar-products-slider__item-pic-1"/>
             </Link>
           </div>
           <div className="similar-products-slider__item-desc">

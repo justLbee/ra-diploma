@@ -273,7 +273,7 @@ export class ProductCard extends React.Component {
 
                     {this.state.images.map((image, index) =>
                       <div key={index} className={`favourite-product-slider__item `}
-                           style={{background: `url(${image}) no-repeat`, backgroundSize: 'cover'}}>
+                           style={{background: `url(${image}) 0% 0% / contain no-repeat`}}>
                         <a />
                       </div>
                     )}
@@ -286,7 +286,7 @@ export class ProductCard extends React.Component {
 
 
               <div className="main-screen__favourite-product-pic"
-                   style={{background: `url(${this.state.images[0]}) no-repeat`, backgroundSize: 'cover'}}
+                   style={{background: `url(${this.state.images[0]}) 0% 0% / contain no-repeat`}}
               >
                 <a className="main-screen__favourite-product-pic__zoom"/>
               </div>

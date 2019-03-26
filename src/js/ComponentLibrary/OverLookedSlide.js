@@ -6,7 +6,7 @@ const OverLookedSlide = ({product, display}) => {
   return (
     Object.entries(product).length !== 0 && product.constructor === Object  ?
     <div className={`overlooked-slider__item`}
-         style={{background: `url(${product.images[0]}) no-repeat`, backgroundSize: 'cover', display: display}}>
+         style={{background: `url(${product.images[0]}) 0% 0% / contain no-repeat`, display: display}}>
       <Link to={`/product/${product.id}`}
             key={product.id}
             onClick={productChanged}/>
