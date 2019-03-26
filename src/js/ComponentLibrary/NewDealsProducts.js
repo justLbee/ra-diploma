@@ -1,6 +1,7 @@
 import React from "react";
 import NewDealsSlide from './NewDealsSlide'
 import Favorites from "../helpers/favorites";
+import {Link} from "react-router-dom";
 
 const favorite = new Favorites();
 
@@ -132,16 +133,16 @@ export default class NewDealsProducts extends React.Component {
               }
               <div className={`new-deals__product new-deals__product_first`}
                    style={{background: `url(${this.state.productFirstImage}) 0% 0% / contain no-repeat`}}>
-                <a href="#"></a>
+                <Link to={`/product/${this.featuredProducts[this.productFirstIndex].id}`} />
               </div>
               <div className={`new-deals__product new-deals__product_active `}
                    style={{background: `url(${this.state.productActiveImage}) 0% 0% / contain no-repeat`}}>
-                <a href="catalogue.html"></a>
+                <Link to={`/product/${this.featuredProducts[this.productActiveIndex].id}`} />
                 <div className={`${this.state.favoriteClass}`} onClick={event => this.addToFavorites(event)} />
               </div>
               <div className={`new-deals__product .new-deals__product_last`}
                    style={{background: `url(${this.state.productLastImage}) 0% 0% / contain no-repeat`}}>
-                <a href="#"></a>
+                <Link to={`/product/${this.featuredProducts[this.productLastIndex].id}`} />
               </div>
               {this.productLastIndex < this.featuredProducts.length ?
                 <div className="new-deals__arrow new-deals__arrow_right arrow"
