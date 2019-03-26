@@ -1,9 +1,6 @@
 import React from 'react';
 // import { Link } from "react-router-dom";
-import CategoryGetter from './helpers/categoryGetter'
 import NewDealsProducts from "./ComponentLibrary/NewDealsProducts"
-
-const categoryGetter = new CategoryGetter();
 
 export default class HomePage extends React.Component {
   constructor(props) {
@@ -41,9 +38,7 @@ export default class HomePage extends React.Component {
         })
       })
       .finally(() => {
-        this.categories = categoryGetter.getAllCategories();
         this.hidePreloader(true);
-
         this.categoryFilter(null, 13);
         // this.inFavorites();
       });

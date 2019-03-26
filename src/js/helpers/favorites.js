@@ -6,6 +6,12 @@ export default class favorites {
   }
 
   add(id){
+    if(this.getFavorites()) {
+      this.favoritesArr = this.getFavorites();
+    } else {
+      this.favoritesArr = [];
+    }
+
     const params = {
       method: 'GET',
       headers: new Headers({
@@ -44,7 +50,7 @@ export default class favorites {
   }
 
   isFavorite(id) {
-    const favsArr = JSON.parse(localStorage.getItem('favorites'));
+    const favsArr = this.getFavorites();
 
     if(favsArr) {
       return !!favsArr.find(fav => {

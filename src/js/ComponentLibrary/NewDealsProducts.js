@@ -1,5 +1,8 @@
 import React from "react";
 import NewDealsSlide from './NewDealsSlide'
+import Favorites from "../helpers/favorites";
+
+const favorite = new Favorites();
 
 export default class NewDealsProducts extends React.Component {
   constructor(props) {
@@ -11,9 +14,11 @@ export default class NewDealsProducts extends React.Component {
       productFirstImage: '',
       productLastImage: '',
       productActiveImage: '',
+      favoriteClass: 'new-deals__product_favorite'
     };
 
     this.featuredProducts = [];
+    this.inFavoritesArr = [];
 
     this.productFirstIndex = 0;
     this.productActiveIndex = 1;
@@ -34,6 +39,8 @@ export default class NewDealsProducts extends React.Component {
 
   parsingProducts() {
     if (this.featuredProducts.length > 0) {
+      this.inFavoritesArr = [];
+
       let firstImage, activeImage, lastImage;
 
       if (this.productFirstIndex < 0) {
@@ -54,7 +61,19 @@ export default class NewDealsProducts extends React.Component {
         productFirstImage: firstImage,
         productActiveImage: activeImage,
         productLastImage: lastImage,
-      })
+      });
+
+      const activeProductId = this.featuredProducts[this.productActiveIndex].id;
+
+      if(favorite.isFavorite(activeProductId)) {
+        this.setState({
+          favoriteClass: 'product-catalogue__product_favorite-chosen'
+        })
+      } else {
+        this.setState({
+          favoriteClass: 'new-deals__product_favorite'
+        })
+      }
     }
   }
 
@@ -82,6 +101,25 @@ export default class NewDealsProducts extends React.Component {
     this.parsingProducts();
   }
 
+  addToFavorites(event) {
+    const itemElement = event.target;
+    const favoriteId = this.featuredProducts[this.productActiveIndex].id;
+
+    if (itemElement.classList.contains('new-deals__product_favorite')) {
+      this.setState({
+        favoriteClass: 'product-catalogue__product_favorite-chosen'
+      });
+
+      favorite.add(favoriteId);
+    } else {
+      this.setState({
+        favoriteClass: 'ew-deals__product_favorite'
+      });
+
+      favorite.remove(favoriteId)
+    }
+  }
+
   render() {
     return (
       <div>
@@ -93,16 +131,16 @@ export default class NewDealsProducts extends React.Component {
                      onClick={event => this.prevProduct(event)}/> : null
               }
               <div className={`new-deals__product new-deals__product_first`}
-                   style={{background: `url(${this.state.productFirstImage}) no-repeat`, backgroundSize: 'contain'}}>
+                   style={{background: `url(${this.state.productFirstImage}) 0% 0% / contain no-repeat`}}>
                 <a href="#"></a>
               </div>
               <div className={`new-deals__product new-deals__product_active `}
-                   style={{background: `url(${this.state.productActiveImage}) no-repeat`, backgroundSize: 'contain'}}>
+                   style={{background: `url(${this.state.productActiveImage}) 0% 0% / contain no-repeat`}}>
                 <a href="catalogue.html"></a>
-                <div className="new-deals__product_favorite"/>
+                <div className={`${this.state.favoriteClass}`} onClick={event => this.addToFavorites(event)} />
               </div>
               <div className={`new-deals__product .new-deals__product_last`}
-                   style={{background: `url(${this.state.productLastImage}) no-repeat`, backgroundSize: 'contain'}}>
+                   style={{background: `url(${this.state.productLastImage}) 0% 0% / contain no-repeat`}}>
                 <a href="#"></a>
               </div>
               {this.productLastIndex < this.featuredProducts.length ?

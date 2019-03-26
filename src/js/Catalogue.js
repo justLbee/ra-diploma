@@ -343,7 +343,6 @@ export class Catalogue extends React.Component {
     } else {
       return 'product-catalogue__product_favorite';
     }
-
   }
 
   sizeGetter(id) {
