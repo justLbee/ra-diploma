@@ -670,9 +670,10 @@ export class Catalogue extends React.Component {
               )}
             </section>
 
-            <Paginator
+            {this.state.items.length > 0 ? <Paginator
               pagesArr={this.pagesArr}
-            />
+            /> : null}
+
           </section>
         </main>
 
