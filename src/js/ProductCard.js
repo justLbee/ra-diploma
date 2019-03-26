@@ -216,8 +216,8 @@ export class ProductCard extends React.Component {
       event.preventDefault();
     } else {
       basket.addToBasket(id, size, amount);
-      console.log(basket.showProductsInBasket().length + 1);
       this.props.onClick(true);
+      window.scrollTo(0, 0);
     }
   }
 
