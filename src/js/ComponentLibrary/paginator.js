@@ -29,7 +29,7 @@ export default class Paginator extends React.Component {
     let currentPageNum = Number(currentPageEl.textContent);
 
     if(isForward) {
-      currentPageNum < this.props.pagesArr.length ? currentPageNum++:currentPageNum;
+      currentPageNum < this.props.pagesArr.length ? currentPageNum++ : currentPageNum;
     }
     else {
       currentPageNum > 1 ? currentPageNum--:currentPageNum;
@@ -60,7 +60,7 @@ export default class Paginator extends React.Component {
       <div className="product-catalogue__pagination">
         <div className="page-nav-wrapper">
           {this.state.prevPage ?
-            <div className="angle-back"><a onClick={e => this.changePage(e, false)}/></div> : null}
+            <div className="angle-back" onClick={e => this.changePage(e, false)} /> : null}
           <ul>
             {
               this.props.pagesArr.map(page =>
@@ -73,7 +73,7 @@ export default class Paginator extends React.Component {
             }
           </ul>
           {this.state.nextPage ?
-            <div className="angle-forward"><a onClick={e => this.changePage(e, true)}/></div> : null}
+            <div className="angle-forward" onClick={e => this.changePage(e, true)} /> : null}
         </div>
       </div>
     )

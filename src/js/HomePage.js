@@ -95,17 +95,17 @@ export default class HomePage extends React.Component {
           <section className="slider">
             <div className="wrapper">
               <div className="slider__pictures">
-                <a className="slider__image" href="#">
-                  <img src="img/slider.jpg" alt="slide picture"/>
+                <a className="slider__image">
+                  <img src="img/slider.jpg" alt="slide"/>
                 </a>
-                <a className="slider__image" href="#">
-                  <img src="img/slider180deg.jpeg" alt="slide picture"/>
+                <a className="slider__image">
+                  <img src="img/slider180deg.jpeg" alt="slide"/>
                 </a>
-                <a className="slider__image" href="#">
-                  <img src="img/slider.jpg" alt="slide picture"/>
+                <a className="slider__image">
+                  <img src="img/slider.jpg" alt="slide"/>
                 </a>
-                <a className="slider__image" href="#">
-                  <img src="img/slider180deg.jpeg" alt="slide picture"/>
+                <a className="slider__image">
+                  <img src="img/slider180deg.jpeg" alt="slide"/>
                 </a>
                 <div className="arrow slider__arrow slider__arrow_left" />
                 <div className="arrow slider__arrow slider__arrow_right" />
@@ -148,12 +148,12 @@ export default class HomePage extends React.Component {
             <h2 className="h2">акции и новости</h2>
             <div className="sales-and-news__items">
               <div className="sales-and-news__item sales-and-news__item_1">
-                <a href="#">
+                <a>
                   <h3 className="h3">обувь к свадьбе</h3>
                 </a>
               </div>
               <div className="sales-and-news__item sales-and-news__item_2">
-                <a href="#">
+                <a>
                   <h3 className="h3">20% скидка
                     <br/>
                     <span>На летнюю обувь</span>
@@ -161,12 +161,12 @@ export default class HomePage extends React.Component {
                 </a>
               </div>
               <div className="sales-and-news__item sales-and-news__item_3">
-                <a href="#">
+                <a>
                   <h3 className="h3">готовимся к лету!</h3>
                 </a>
               </div>
               <div className="sales-and-news__item sales-and-news__item_4">
-                <a href="#">
+                <a>
                   <h3 className="h3">Больше покупок –
                     <br/>больше скидка!</h3>
                 </a>
@@ -175,15 +175,15 @@ export default class HomePage extends React.Component {
                 <div className="sales-and-news__arrow sales-and-news__arrow_up arrow" />
                 <div className="sales-and-news__new">
                   <time dateTime="2017-01-18 00:00">18 января 2017</time>
-                  <a href="#">Американские резиновые сапоги Bogs идеально подходят для русской зимы!</a>
+                  <a>Американские резиновые сапоги Bogs идеально подходят для русской зимы!</a>
                 </div>
                 <div className="sales-and-news__new">
                   <time dateTime="2017-05-18 00:00">18 мая 2017</time>
-                  <a href="#">Магазины Bosa Noga</a>
+                  <a>Магазины Bosa Noga</a>
                 </div>
                 <div className="sales-and-news__new">
                   <time dateTime="2017-03-10 00:00">10 марта 2017</time>
-                  <a href="#">Тенденция весны 2018: розовый и фуксия. 10 пар обуви для яркого образа</a>
+                  <a>Тенденция весны 2018: розовый и фуксия. 10 пар обуви для яркого образа</a>
                 </div>
                 <div className="sales-and-news__arrow sales-and-news__arrow_down arrow" />
               </div>
