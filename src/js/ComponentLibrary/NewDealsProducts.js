@@ -133,7 +133,8 @@ export default class NewDealsProducts extends React.Component {
               }
               <div className={`new-deals__product new-deals__product_first`}
                    style={{background: `url(${this.state.productFirstImage}) 0% 0% / contain no-repeat`}}>
-                <Link to={`/product/${this.featuredProducts[this.productFirstIndex].id}`} />
+                {this.productFirstIndex >= 0 ?
+                  <Link to={`/product/${this.featuredProducts[this.productFirstIndex].id}`} /> : null}
               </div>
               <div className={`new-deals__product new-deals__product_active `}
                    style={{background: `url(${this.state.productActiveImage}) 0% 0% / contain no-repeat`}}>
@@ -142,7 +143,7 @@ export default class NewDealsProducts extends React.Component {
               </div>
               <div className={`new-deals__product .new-deals__product_last`}
                    style={{background: `url(${this.state.productLastImage}) 0% 0% / contain no-repeat`}}>
-                <Link to={`/product/${this.featuredProducts[this.productLastIndex].id}`} />
+                {this.productLastIndex < this.featuredProducts.length ? <Link to={`/product/${this.featuredProducts[this.productLastIndex].id}`} /> : null}
               </div>
               {this.productLastIndex < this.featuredProducts.length ?
                 <div className="new-deals__arrow new-deals__arrow_right arrow"
